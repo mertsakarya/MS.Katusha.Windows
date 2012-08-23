@@ -54,8 +54,9 @@ namespace MS.Katusha.Windows
             listBox1.Items.Clear();
             for (var i = 0; i < list.Length; i++) {
                 var item = list[i];
-                var listViewItem = new ListViewItem {Tag = item, Text = item.Name};
+                var listViewItem = new ListViewItem {Tag = item, Text = item.UserName + " / " + item.Name};
                 listViewItem.ImageIndex = i;
+                listViewItem.ToolTipText = item.Email;
                 var bucket = "MS.Katusha" + ((comboBox1.Text=="http://localhost:10595/")?".Test":"");
                 imageList.Images.Add(FromURL(String.Format("http://s3.amazonaws.com/{1}/Photos/4-{0}.jpg", item.ProfilePhotoGuid, bucket)));
                 listBox1.Items.Add(listViewItem);
@@ -84,7 +85,7 @@ namespace MS.Katusha.Windows
                 if (profileInfo == null) return;
                 var guid = profileInfo.Guid;
                 textBox1.Text = _service.GetProfile(guid);
-                textBox4.Text = string.Format(@"C:\Users\mert.sakarya\Dropbox\MS.Katusha\ProfileBackups\{0}-{1}.json", profileInfo.Name, profileInfo.Guid);
+                textBox4.Text = string.Format(@"C:\Users\mert.sakarya\Dropbox\MS.Katusha\ProfileBackups\{0}.json", profileInfo.UserName);
             }
         }
 
