@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -39,6 +36,7 @@ namespace MS.Katusha.SDK
         private readonly string _password;
         private readonly string _baseUrl;
         private HttpBasicAuthenticator _authenticator;
+        public string Result = "";
 
         public MSKatushaService(string username, string password, string baseUrl = "")
         {
@@ -54,6 +52,7 @@ namespace MS.Katusha.SDK
             var request = new RestRequest("Api/GetProfile/{guid}", Method.GET)
                 .AddUrlSegment("guid", guid.ToString());
             var response = client.Execute(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
             if(String.IsNullOrWhiteSpace(response.Content)) return "";
             string result = "";
             try {
@@ -71,13 +70,14 @@ namespace MS.Katusha.SDK
             var request = new RestRequest("Api/Search/{page}", Method.POST) { RequestFormat = DataFormat.Json }
                 .AddUrlSegment("page", page.ToString(CultureInfo.InvariantCulture))
                 .AddBody(new { Gender = Enum.GetName(typeof(Sex), gender)});
-            var result = client.Execute<ApiSearchResultModel>(request);
-            if(result.Data == null) {
+            var response = client.Execute<ApiSearchResultModel>(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
+            if (response.Data == null) {
                 total = 0;
                 return new List<ApiProfileInfo>();
             }
-            total = result.Data.Total;
-            return result.Data.Profiles;
+            total = response.Data.Total;
+            return response.Data.Profiles;
         }
 
         public string DeleteProfile(Guid guid)
@@ -86,17 +86,35 @@ namespace MS.Katusha.SDK
             var request = new RestRequest("Api/DeleteProfile/{guid}", Method.GET)
                 .AddUrlSegment("guid", guid.ToString());
             var response = client.Execute(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
             return response.Content;
+        }
+
+        public Guid GetProfileGuid(string key)
+        {
+            var client = new RestClient(_baseUrl) { Authenticator = _authenticator };
+            var request = new RestRequest("Api/GetProfileGuid/{key}", Method.GET)
+                .AddUrlSegment("key", key);
+            var response = client.Execute(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
+            var content = response.Content;
+            if (content == "{userGuid:''}") return Guid.Empty;
+            var obj = JsonConvert.DeserializeObject<JsonObject>(content);
+            var str = obj["userGuid"].ToString();
+            if (String.IsNullOrWhiteSpace(str)) return Guid.Empty;
+            return Guid.Parse(str);
         }
 
         public HttpStatusCode SetProfile(string profileJsonText)
         {
             var client = new RestClient(_baseUrl) { Authenticator = _authenticator };
-            var request = new RestRequest("Api/SetProfile", Method.POST) { RequestFormat = DataFormat.Json }
-                .AddBody(profileJsonText);
+            var request = new RestRequest("Api/SetProfile", Method.POST);
+            request.AddHeader("Accept", "application/json");
+            request.Parameters.Clear();
+            request.AddParameter("application/json", profileJsonText, ParameterType.RequestBody);
+            //"Api/SetProfile", Method.POST) { RequestFormat = DataFormat.Json }.AddBody(profileJsonText);
             var result = client.Execute(request);
             return result.StatusCode;
-
         }
 
 

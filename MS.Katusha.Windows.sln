@@ -5,6 +5,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS.Katusha.Windows", "MS.Ka
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS.Katusha.SDK", "MS.Katusha.SDK\MS.Katusha.SDK.csproj", "{C4BEF6B0-C044-4696-9057-38428CA2C259}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS.Katusha.Crawler", "MS.Katusha.Crawler\MS.Katusha.Crawler.csproj", "{7E4AB0D4-3C6E-4581-9A49-57D169A58889}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4DA68F40-1133-44DF-9661-E40C06BD7D80}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS.Katusha", "..\MS.Katusha\MS.Katusha.Domain\MS.Katusha.csproj", "{36AA6969-6329-4BB1-BEA6-8AFCC1CA4152}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +30,14 @@ Global
 		{C4BEF6B0-C044-4696-9057-38428CA2C259}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4BEF6B0-C044-4696-9057-38428CA2C259}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4BEF6B0-C044-4696-9057-38428CA2C259}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E4AB0D4-3C6E-4581-9A49-57D169A58889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E4AB0D4-3C6E-4581-9A49-57D169A58889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E4AB0D4-3C6E-4581-9A49-57D169A58889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E4AB0D4-3C6E-4581-9A49-57D169A58889}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36AA6969-6329-4BB1-BEA6-8AFCC1CA4152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36AA6969-6329-4BB1-BEA6-8AFCC1CA4152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36AA6969-6329-4BB1-BEA6-8AFCC1CA4152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36AA6969-6329-4BB1-BEA6-8AFCC1CA4152}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
