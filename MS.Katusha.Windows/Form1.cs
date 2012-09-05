@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MS.Katusha.Crawler;
 using MS.Katusha.SDK;
@@ -18,9 +15,9 @@ namespace MS.Katusha.Windows
         private MSKatushaService _service;
         private ApiProfileInfo profileInfo = null;
         private static readonly string KatushaFolder = GetDropboxFolder() + "\\MS.Katusha";
-        private readonly ICrawler crawler = new TravelGirlsCrawler();
-        private static readonly string[] Servers = new[] { "https://mskatusha.apphb.com/", "https://mskatushaeu.apphb.com/", "http://localhost:10595/", "http://localhost/" };
-        private static readonly string[] Folders = new[] { "TravelGirls", "TravelGirlsProcessed", "TravelGirlsProcessedEU", "TravelGirlsProcessedSite" };
+        private readonly ICrawler _crawler = new TravelGirlsCrawler();
+        private static readonly string[] Servers = new[] {"https://mskatusha.apphb.com/", "https://mskatushaeu.apphb.com/", "http://localhost:10595/", "http://localhost/"};
+        private static readonly string[] Folders = new[] {"TravelGirls", "TravelGirlsProcessed", "TravelGirlsProcessedEU", "TravelGirlsProcessedSite"};
 
         public Form1()
         {
@@ -40,7 +37,30 @@ namespace MS.Katusha.Windows
             FillFiles();
         }
 
-        private static string GetDropboxFolder()
+        private void OnCrawlItemReady(ICrawler crawler, CrawlItemResult crawlItemResult) {
+            var jsonString = crawlItemResult.Output;
+            var filename = crawlItemResult.UniqueId;
+            var folder = KatushaFolder + "\\" + comboBox4.Text;
+            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+            using (var file = new StreamWriter(String.Format(folder + @"\{0}.json", filename))) {
+                file.Write(jsonString);
+            }
+            textBox5.Text += "\r\n" + crawlItemResult.Uri;
+        }
+
+        private void OnCrawlPageReady(ICrawler crawler, CrawlPageResult crawlPageResult)
+        {
+            var taskResult = crawlPageResult.Items;
+            if (taskResult != null)
+                foreach (var item in taskResult) {
+                    listView1.Items.Add(new ListViewItem(item.Key));
+                    if (checkBox2.Checked) {
+                        _crawler.CrawlItemAsync(OnCrawlItemReady, comboBox2.Text, item.Key);
+                    }
+                }
+        }
+
+    private static string GetDropboxFolder()
         {
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dropbox\\host.db");
             var dbBase64Text = Convert.FromBase64String(System.IO.File.ReadAllLines(dbPath)[1]);
@@ -142,37 +162,14 @@ namespace MS.Katusha.Windows
             var lastpageNo = (int) numericUpDown1.Value;
             listView1.Items.Clear();
             for (var i = lastpageNo; i > 0; i--) {
-                Task.Factory.FromAsync(crawler.CrawlPageAsync(comboBox2.Text, i.ToString(CultureInfo.InvariantCulture)), result => {
-                    var taskResult = result as Task<IDictionary<string, string>>;
-                    if(taskResult != null && taskResult.Result != null)
-                        foreach (var item in taskResult.Result) 
-                            listView1.Items.Add(new ListViewItem(item.Key));
-                        
-                });
+                _crawler.CrawlPageAsync(OnCrawlPageReady, comboBox2.Text, i.ToString(CultureInfo.InvariantCulture));
             }
-            //if (!checkBox2.Checked) return;
-            //foreach(ListViewItem item in listView1.Items) {
-            //    ProcessItem(comboBox2.Text, item.Text);
-            //}
-        }
-
-        private void ProcessItem(string genderText, string href)
-        {
-            var crawlItemResult = crawler.CrawlItem(genderText, href);
-            var jsonString = crawlItemResult.Output;
-            var filename = crawlItemResult.UniqueId;
-            var folder = KatushaFolder + "\\" + comboBox4.Text;
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-            using (var file = new StreamWriter(String.Format(folder + @"\{0}.json", filename))) {
-                file.Write(jsonString);
-            }
-            textBox5.Text += "\r\n" + genderText + " : " + href;
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
             foreach(ListViewItem item in listView1.SelectedItems) {
-                ProcessItem(comboBox2.Text, item.Text);
+                _crawler.CrawlItemAsync(OnCrawlItemReady, comboBox2.Text, item.Text);
             }
         }
 

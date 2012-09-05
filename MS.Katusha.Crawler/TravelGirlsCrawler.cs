@@ -38,13 +38,15 @@ namespace MS.Katusha.Crawler
             return GetPage(gender, pageNo);
         }
 
-        public async Task<IDictionary<string, string>> CrawlPageAsync(params string[] values)
+        public async void CrawlPageAsync(CrawlPageReadyEvent onCrawlPageReady, params string[] values)
         {
             int pageNo;
             var gender = ParseCrawlPageParameters(values, out pageNo);
             var future = GetPageAsync(gender, pageNo);
-            var result = await future;
-            return result;
+            if (onCrawlPageReady != null) {
+                var result = await future;
+                onCrawlPageReady(this, new CrawlPageResult { Items = result });
+            }
         }
 
         private static Sex ParseCrawlPageParameters(string[] values, out int pageNo)
@@ -80,7 +82,7 @@ namespace MS.Katusha.Crawler
             var nodes = doc.DocumentNode.SelectNodes("//div[@class=\"memberPhoto\"]");
             if (nodes.Count <= 0) return new Dictionary<string, string>();
             var dict = new Dictionary<string, string>(nodes.Count);
-            foreach (HtmlNode memberNode in nodes) {
+            foreach (var memberNode in nodes) {
                 var linkNode = memberNode.SelectSingleNode("a");
                 var hrefAttr = linkNode.Attributes["href"];
                 if (hrefAttr != null && !dict.ContainsKey(hrefAttr.Value.Trim())) dict.Add(hrefAttr.Value.Trim(), hrefAttr.Value.Trim());
@@ -115,15 +117,17 @@ namespace MS.Katusha.Crawler
             return ProcessProfilePage(uniqueId, country, gender, uri);
         }
 
-        public async Task<CrawlItemResult> CrawlItemAsync(params string[] parameters)
+        public async void CrawlItemAsync(CrawlItemReadyEvent onCrawlItemReady, params string[] parameters)
         {
             Uri uri;
             string country;
             string uniqueId;
             var gender = ParseCrawlItemParameters(out uniqueId, parameters, out uri, out country);
             var future = ProcessProfilePageAsync(uniqueId, country, gender, uri);
-            var result = await future;
-            return result;
+            if (onCrawlItemReady != null) {
+                var result = await future;
+                onCrawlItemReady(this, result);
+            }
         }
 
         private CrawlItemResult ProcessProfilePage(string uniqueId, string country, Sex gender, Uri uri)
@@ -136,7 +140,7 @@ namespace MS.Katusha.Crawler
             var client = new HttpClient();
             var future = client.GetStringAsync(uri);
             var content = await future;
-            return new CrawlItemResult { UniqueId = uniqueId, Output = ProcessProfilePageDetail(uniqueId, country, gender, content) };
+            return new CrawlItemResult { UniqueId = uniqueId, Uri = uri,  Output = ProcessProfilePageDetail(uniqueId, country, gender, content) };
         }
 
         private static string ProcessProfilePageDetail(string uniqueId, string country, Sex gender, string content)
