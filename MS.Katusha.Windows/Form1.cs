@@ -282,6 +282,19 @@ namespace MS.Katusha.Windows
         {
             FillFiles();
         }
+
+        private void textBox6_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            var text = textBox6.Text;
+            if(text.Length > 2)
+                foreach (ListViewItem item in listBox1.Items) {
+                    var profile = item.Tag as ApiProfileInfo;
+                    if (profile == null) continue;
+                    var searchVal = profile.Email + " | " + profile.Name + " | " + profile.UserName;
+                    if (searchVal.IndexOf(text, StringComparison.Ordinal) >= 0)
+                        item.Selected = true;
+                }
+        }
     }
 
 }
