@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using MS.Katusha.Domain.Service;
 
 namespace MS.Katusha.Crawler
 {
@@ -14,6 +14,13 @@ namespace MS.Katusha.Crawler
     public class CrawlPageResult
     {
         public IDictionary<string, string> Items { get; set; }
+    }
+
+    public class DownloadPhotoResult
+    {
+        public Uri Uri { get; set; }
+        public int ImageOrder { get; set; }
+        public byte[] Data { get; set; }
     }
 
     public delegate void CrawlPageReadyEvent(ICrawler crawler, CrawlPageResult crawlPageResult);

@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Windows.Forms;
+using MS.Katusha.Configuration;
 using MS.Katusha.Crawler;
+using MS.Katusha.Enumerations;
 using MS.Katusha.SDK;
+using Newtonsoft.Json;
+using Sex = MS.Katusha.SDK.Sex;
 
 namespace MS.Katusha.Windows
 {
@@ -16,8 +21,10 @@ namespace MS.Katusha.Windows
         private ApiProfileInfo profileInfo = null;
         private static readonly string KatushaFolder = GetDropboxFolder() + "\\MS.Katusha";
         private readonly ICrawler _crawler = new TravelGirlsCrawler();
-        private static readonly string[] Servers = new[] {"https://mskatusha.apphb.com/", "https://mskatushaeu.apphb.com/", "http://localhost:10595/", "http://localhost/"};
+        private static readonly string[] Servers = new[] {"http://www.mskatusha.com/", "https://mskatusha.apphb.com/", "https://mskatushaeu.apphb.com/", "http://localhost:10595/", "http://localhost/"};
+        private static readonly string[] Buckets = new[] { "s.mskatusha.com", "MS.Katusha", "MS.Katusha.EU", "MS.Katusha.Test" };
         private static readonly string[] Folders = new[] {"TravelGirls", "TravelGirlsProcessed", "TravelGirlsProcessedEU", "TravelGirlsProcessedSite"};
+
 
         public Form1()
         {
@@ -26,14 +33,19 @@ namespace MS.Katusha.Windows
             textBox3.Text = "690514";
             button3_Click(null, null);
             button7.Enabled = !checkBox2.Checked;
-            comboBox1.Text = Servers[1];
-            comboBox1.Items.AddRange(items: Servers);
-            comboBox6.Text = Servers[1];
-            comboBox6.Items.AddRange(items: Servers);
+            comboBox1.Text = Servers[0];
+            comboBox1.Items.AddRange(Servers);
+            comboBox6.Text = Servers[0];
+            comboBox6.Items.AddRange(Servers);
             comboBox3.Text = Folders[0];
-            comboBox3.Items.AddRange(items: Folders);
+            comboBox3.Items.AddRange(Folders);
             comboBox5.Text = Folders[1];
-            comboBox5.Items.AddRange(items: Folders);
+            comboBox5.Items.AddRange(Folders);
+            comboBox7.Text = Buckets[0];
+            foreach (var bucket in Buckets) {
+                comboBox7.Items.Add(new S3FS(bucket));
+            }
+            comboBox7.SelectedIndex = 0;
             FillFiles();
         }
 
@@ -63,7 +75,7 @@ namespace MS.Katusha.Windows
     private static string GetDropboxFolder()
         {
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dropbox\\host.db");
-            var dbBase64Text = Convert.FromBase64String(System.IO.File.ReadAllLines(dbPath)[1]);
+            var dbBase64Text = Convert.FromBase64String(File.ReadAllLines(dbPath)[1]);
             var folderPath = System.Text.Encoding.ASCII.GetString(dbBase64Text);
             return folderPath;
         }
@@ -75,7 +87,7 @@ namespace MS.Katusha.Windows
             label1.Text = total.ToString(CultureInfo.InvariantCulture);
         }
 
-        public static Image FromURL(string Url)
+        public static Image FromUrl(string Url)
         {
             try {
                 var request = HttpWebRequest.Create(Url) as HttpWebRequest;
@@ -88,22 +100,26 @@ namespace MS.Katusha.Windows
 
         private void FillList(Sex gender, out int total)
         {
-            var list = _service.GetProfiles(gender, out total).ToArray();
+            var list = _service.GetProfiles(Sex.Female, out total).ToList();
+            list.AddRange(_service.GetProfiles(Sex.Male, out total).ToList());
+
+            ProcessList(total, list);
+        }
+
+        private void ProcessList(int total, IList<ApiProfileInfo> list)
+        {
             textBox5.Text += "\r\n" + _service.Result;
             label1.Text = total.ToString(CultureInfo.InvariantCulture);
             var imageList = new ImageList();
-            imageList.ImageSize = new Size(35,48);
+            imageList.ImageSize = new Size(35, 48);
             listBox1.BeginUpdate();
             try {
                 listBox1.View = View.LargeIcon;
                 listBox1.Items.Clear();
-                for (var i = 0; i < list.Length; i++) {
+                for (var i = 0; i < list.Count; i++) {
                     var item = list[i];
-                    var listViewItem = new ListViewItem {Tag = item, Text = item.UserName + " / " + item.Name};
-                    listViewItem.ImageIndex = i;
-                    listViewItem.ToolTipText = item.Email;
-                    var bucket = "MS.Katusha" + ((comboBox1.Text == "http://localhost:10595/") ? ".Test" : "");
-                    var image = FromURL(String.Format("http://s3.amazonaws.com/{1}/Photos/4-{0}.jpg", item.ProfilePhotoGuid, bucket));
+                    var listViewItem = new ListViewItem {Tag = item, Text = item.UserName + " / " + item.Name, ImageIndex = i, ToolTipText = item.Email};
+                    var image = GetImage(item.ProfilePhotoGuid);
                     imageList.Images.Add(image);
                     listBox1.Items.Add(listViewItem);
                 }
@@ -114,6 +130,29 @@ namespace MS.Katusha.Windows
             }
             //listBox1.StateImageList = imageList;
         }
+
+        private Image GetImage(Guid guid)
+        {
+            const string ua = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;" + ")";
+            var path = Application.LocalUserAppDataPath + "\\Images";
+            var file = path + "\\4-" + guid + ".jpg";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            if (!File.Exists(file)) {
+                var s3 = (comboBox7.SelectedItem as S3FS).FileSystem;
+                var url = s3.GetPhotoUrl(guid, PhotoType.Icon);
+                var webClient = new WebClient();
+                webClient.Headers.Add(HttpRequestHeader.UserAgent, ua);
+                webClient.Headers["Accept"] = "/";
+                try {
+                    webClient.DownloadFile(url, file);
+                } catch {
+                    return GetImage(Guid.Empty);
+                }
+            }
+            return Image.FromFile(file);
+        }
+
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -145,16 +184,44 @@ namespace MS.Katusha.Windows
 
         private void listBox1_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            if (listBox1.SelectedItems.Count > 0) {
-                profileInfo = listBox1.SelectedItems[0].Tag as ApiProfileInfo;
-                if (profileInfo == null) return;
-                var guid = profileInfo.Guid;
-                textBox1.Text = _service.GetProfile(guid);
-                textBox5.Text += "\r\n" + _service.Result;
-                textBox4.Text = string.Format(@"{0}\ProfileBackups\{1}.json", KatushaFolder, profileInfo.UserName);
+            if (listBox1.SelectedItems.Count <= 0) return;
+            var uri = new Uri(comboBox1.Text);
+            profileInfo = listBox1.SelectedItems[0].Tag as ApiProfileInfo;
+            if (profileInfo == null) return;
+            var guid = profileInfo.Guid;
+            switch (tabControl3.SelectedIndex) {
+                case 0:
+                    webBrowser1.Navigate(String.Format("{0}/Profiles/Show/{1}", uri.AbsoluteUri, guid.ToString()));
+                    break;
+                case 1:
+                    textBox1.Text = _service.GetProfile(guid);
+                    break;
+                case 2:
+                    var list = _service.GetDialogs(profileInfo.Guid);
+                    var dialogs = new BindingSource();// <WinDialog>(list.Count);
+                    foreach(var item in list) {
+                        var profile = FindProfile(item.ProfileId);
+                        if(profile != null) {
+                            var image = GetImage(profile.ProfilePhotoGuid);
+                            var dialog = new WinDialog() {Image = image, Name = profile.Name, ProfileId = item.ProfileId, Count = item.Count, LastReceived = item.LastReceivedDate, LastSent = item.LastSentDate, UnreadReceivedCount = item.UnreadReceivedCount, UnreadSentCount = item.UnreadSentCount};
+                            dialogs.Add(dialog);
+                        }
+                    }
+                    dataGridView1.DataSource = dialogs;
+                    break;
             }
+            textBox5.Text += "\r\n" + _service.Result;
+            textBox4.Text = string.Format(@"{0}\ProfileBackups\{1}.json", KatushaFolder, profileInfo.UserName);
         }
 
+        private ApiProfileInfo FindProfile(long id)
+        {
+            foreach(ListViewItem item in listBox1.Items) {
+                var apiProfileInfo = item.Tag as ApiProfileInfo;
+                if (apiProfileInfo.Id == id) return apiProfileInfo;
+            }
+            return null;
+        }
         private void checkBox2_CheckedChanged(object sender, EventArgs e) { button7.Enabled = !checkBox2.Checked; }
 
         private void button6_Click(object sender, EventArgs e)
@@ -216,4 +283,5 @@ namespace MS.Katusha.Windows
             FillFiles();
         }
     }
+
 }

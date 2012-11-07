@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using MS.Katusha.Domain.Raven.Entities;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -23,6 +24,7 @@ namespace MS.Katusha.SDK
 
     public class ApiProfileInfo
     {
+        public long Id { get; set; }
         public Guid Guid { get; set; }
         public string Name { get; set; }
         public Guid ProfilePhotoGuid { get; set; }
@@ -35,7 +37,7 @@ namespace MS.Katusha.SDK
         private readonly string _username;
         private readonly string _password;
         private readonly string _baseUrl;
-        private HttpBasicAuthenticator _authenticator;
+        private readonly HttpBasicAuthenticator _authenticator;
         public string Result = "";
 
         public MSKatushaService(string username, string password, string baseUrl = "")
@@ -54,7 +56,7 @@ namespace MS.Katusha.SDK
             var response = client.Execute(request);
             Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
             if(String.IsNullOrWhiteSpace(response.Content)) return "";
-            string result = "";
+            string result;
             try {
                 var obj = JsonConvert.DeserializeObject(response.Content);
                 result = JsonConvert.SerializeObject(obj, Formatting.Indented);
@@ -117,6 +119,18 @@ namespace MS.Katusha.SDK
             return result.StatusCode;
         }
 
+        public IList<Dialog> GetDialogs(Guid guid)
+        {
+            var client = new RestClient(_baseUrl) { Authenticator = _authenticator };
+            var request = new RestRequest("Api/GetDialogs/{key}", Method.GET) {RequestFormat = DataFormat.Json}
+                .AddUrlSegment("key", guid.ToString());
+            var response = client.Execute<List<Dialog>>(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
+            if (response.Data == null) {
+                return new List<Dialog>();
+            }
+            return response.Data;
+        }
 
     }
 }
