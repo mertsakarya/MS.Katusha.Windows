@@ -36,9 +36,10 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MS.Katusha.Crawler\bin\Debug\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
@@ -62,7 +63,6 @@
     <Compile Include="Messages.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="S3FS.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -75,6 +75,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,10 +94,6 @@
       <Project>{36AA6969-6329-4BB1-BEA6-8AFCC1CA4152}</Project>
       <Name>MS.Katusha</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MS.Katusha\MS.Katusha.FileSystems\MS.Katusha.FileSystems.csproj">
-      <Project>{46BB085A-B2F4-4CB7-A939-D335C1C660D5}</Project>
-      <Name>MS.Katusha.FileSystems</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MS.Katusha.Crawler\MS.Katusha.Crawler.csproj">
       <Project>{7E4AB0D4-3C6E-4581-9A49-57D169A58889}</Project>
       <Name>MS.Katusha.Crawler</Name>
@@ -105,6 +102,9 @@
       <Project>{c4bef6b0-c044-4696-9057-38428ca2c259}</Project>
       <Name>MS.Katusha.SDK</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

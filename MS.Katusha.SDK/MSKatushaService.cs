@@ -1,52 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Text;
+using MS.Katusha.Domain.Entities;
 using MS.Katusha.Domain.Raven.Entities;
+using MS.Katusha.Domain.Service;
+using MS.Katusha.Enumerations;
 using Newtonsoft.Json;
 using RestSharp;
 
 namespace MS.Katusha.SDK
 {
-    public enum Sex : byte
-    {
-        Male = 1,
-        Female = 2
-    }
+    //public enum Sex : byte
+    //{
+    //    Male = 1,
+    //    Female = 2
+    //}
     
-    public class ApiSearchResultModel
-    {
-        public List<ApiProfileInfo> Profiles { get; set; }
-        public int Total { get; set; }
-        public int PageIndex { get; set; }
-        public int PageSize { get; set; }
-    }
+    //public class ApiSearchResultModel
+    //{
+    //    public List<ApiProfileInfo> Profiles { get; set; }
+    //    public int Total { get; set; }
+    //    public int PageIndex { get; set; }
+    //    public int PageSize { get; set; }
+    //}
 
-    public class ApiProfileInfo
-    {
-        public long Id { get; set; }
-        public Guid Guid { get; set; }
-        public string Name { get; set; }
-        public Guid ProfilePhotoGuid { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-    }
+    //public class ApiProfileInfo
+    //{
+    //    public long Id { get; set; }
+    //    public Guid Guid { get; set; }
+    //    public string Name { get; set; }
+    //    public Guid ProfilePhotoGuid { get; set; }
+    //    public string UserName { get; set; }
+    //    public string Email { get; set; }
+    //    public DateTime LastUpdate { get; set; }
+    //}
 
     public class MSKatushaService
     {
         private readonly string _username;
         private readonly string _password;
+        private readonly string _dataFolder;
         private readonly string _baseUrl;
         private readonly HttpBasicAuthenticator _authenticator;
         public string Result = "";
+        private RavenStore _ravenStore;
 
-        public MSKatushaService(string username, string password, string baseUrl = "")
+        public MSKatushaService(string username, string password, string baseUrl, string dataFolder)
         {
             _username = username;
             _password = password;
             _baseUrl = (!String.IsNullOrWhiteSpace(baseUrl)) ? baseUrl : "https://mskatusha.apphb.com/";
+
+            var s3Folder = "\\" + new Uri(_baseUrl).Host;
+            _dataFolder = dataFolder + s3Folder;
+            if (!Directory.Exists(_dataFolder)) Directory.CreateDirectory(_dataFolder);
+            if (!Directory.Exists(_dataFolder + "\\Images")) Directory.CreateDirectory(_dataFolder + "\\Images");
+            if (!Directory.Exists(_dataFolder + "\\Profiles")) Directory.CreateDirectory(_dataFolder + "\\Profiles");
+            if (!Directory.Exists(_dataFolder + "\\Data")) Directory.CreateDirectory(_dataFolder + "\\Data");
             _authenticator = new HttpBasicAuthenticator(_username, _password);
+            _ravenStore = new RavenStore(_dataFolder + "\\Data");
         }
+
+        public Image GetImage(Guid guid, S3FS s3Fs)
+        {
+            if(s3Fs == null) throw new ArgumentNullException("S3FS");
+            var path = _dataFolder + "\\Images";
+            var file = path + "\\4-" + guid + ".jpg";
+            if (!File.Exists(file)) {
+                var s3 = s3Fs.FileSystem;
+                var url = s3.GetPhotoUrl(guid, PhotoType.Icon);
+                var webClient = new WebClient();
+                webClient.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;" + ")");
+                webClient.Headers["Accept"] = "/";
+                try {
+                    webClient.DownloadFile(url, file);
+                } catch {
+                    return GetImage(Guid.Empty, s3Fs);
+                }
+            }
+            return Image.FromFile(file);
+        }
+
 
         public string GetProfile(Guid guid)
         {
@@ -72,7 +111,7 @@ namespace MS.Katusha.SDK
             var request = new RestRequest("Api/Search/{page}", Method.POST) { RequestFormat = DataFormat.Json }
                 .AddUrlSegment("page", page.ToString(CultureInfo.InvariantCulture))
                 .AddBody(new { Gender = Enum.GetName(typeof(Sex), gender)});
-            var response = client.Execute<ApiSearchResultModel>(request);
+            var response = client.Execute<ApiSearchResult>(request);
             Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
             if (response.Data == null) {
                 total = 0;
@@ -80,6 +119,35 @@ namespace MS.Katusha.SDK
             }
             total = response.Data.Total;
             return response.Data.Profiles;
+        }
+
+        public IList<Profile> GetProfiles()
+        {
+            var lastUpdateTime = _ravenStore.LastUpdate("Profiles");
+
+            var client = new RestClient(_baseUrl) { Authenticator = _authenticator };
+            var request = new RestRequest("Api/GetProfilesByTime/{key}", Method.GET) { RequestFormat = DataFormat.Json }
+                .AddUrlSegment("key", "1")
+                .AddParameter("date", lastUpdateTime.ToString("u"));
+            var response = client.Execute<List<Profile>>(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
+            if (response.Data == null) {
+                return new List<Profile>();
+            }
+            var profilesFolder = _dataFolder + "\\Profiles";
+            var profiles = response.Data;
+            if (profiles == null) {
+                return new List<Profile>();
+            }
+            var maxDate = new DateTime(1900, 1, 1);
+            foreach (var profile in profiles) {
+                _ravenStore.AddProfile(profile);
+                var file = profilesFolder + "\\" + profile.Guid + ".json";
+                WriteFile(file, JsonConvert.SerializeObject(profile));
+                if (profile.ModifiedDate > maxDate) maxDate = profile.ModifiedDate;
+            }
+            _ravenStore.LastUpdate("Profiles", maxDate);
+            return _ravenStore.GetProfiles();
         }
 
         public string DeleteProfile(Guid guid)
@@ -132,5 +200,20 @@ namespace MS.Katusha.SDK
             return response.Data;
         }
 
+        private string ReadFile(string fileName)
+        {
+            using (var streamReadr = new StreamReader(fileName, Encoding.UTF8))
+                return streamReadr.ReadToEnd();
+        }
+        private void WriteFile(string fileName, string text)
+        {
+            using (var stream = new StreamWriter(fileName))
+                stream.Write(text);
+        }
+
+        public IList<Profile> GetProfiles(string text)
+        {
+            return _ravenStore.GetProfiles(text);
+        }
     }
 }

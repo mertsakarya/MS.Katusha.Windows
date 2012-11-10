@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MS.Katusha.Configuration;
-using MS.Katusha.FileSystems;
+﻿using MS.Katusha.FileSystems;
 
-namespace MS.Katusha.Windows
+namespace MS.Katusha.SDK
 {
     public class S3FS
     {

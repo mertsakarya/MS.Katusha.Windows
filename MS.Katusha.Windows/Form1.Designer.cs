@@ -33,15 +33,14 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
             this.comboBox7 = new System.Windows.Forms.ComboBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.listBox1 = new System.Windows.Forms.ListView();
-            this.tabControl3 = new System.Windows.Forms.TabControl();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.ProfileList = new System.Windows.Forms.ListView();
+            this.ProfileTabs = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.tabPage6 = new System.Windows.Forms.TabPage();
@@ -75,8 +74,7 @@
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.button8 = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.SearchButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -84,7 +82,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.tabControl3.SuspendLayout();
+            this.ProfileTabs.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabPage7.SuspendLayout();
@@ -151,8 +149,6 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.comboBox7);
-            this.panel1.Controls.Add(this.button2);
-            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.textBox3);
             this.panel1.Controls.Add(this.textBox2);
@@ -170,37 +166,15 @@
             this.comboBox7.Size = new System.Drawing.Size(121, 21);
             this.comboBox7.TabIndex = 15;
             // 
-            // button2
-            // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(887, 7);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(49, 23);
-            this.button2.TabIndex = 14;
-            this.button2.Text = "Girls";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(941, 7);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(47, 23);
-            this.button1.TabIndex = 13;
-            this.button1.Text = "Men";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(514, 7);
+            this.button3.Location = new System.Drawing.Point(542, 7);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(44, 23);
+            this.button3.Size = new System.Drawing.Size(68, 23);
             this.button3.TabIndex = 12;
-            this.button3.Text = "Set";
+            this.button3.Text = "Connect";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.ConnectClick);
             // 
             // textBox3
             // 
@@ -239,44 +213,52 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.SearchButton);
             this.splitContainer1.Panel1.Controls.Add(this.textBox6);
-            this.splitContainer1.Panel1.Controls.Add(this.label6);
-            this.splitContainer1.Panel1.Controls.Add(this.listBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.ProfileList);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.tabControl3);
+            this.splitContainer1.Panel2.Controls.Add(this.ProfileTabs);
             this.splitContainer1.Size = new System.Drawing.Size(990, 455);
             this.splitContainer1.SplitterDistance = 294;
             this.splitContainer1.TabIndex = 16;
             // 
-            // listBox1
+            // textBox6
             // 
-            this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.textBox6.Location = new System.Drawing.Point(7, 4);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(208, 20);
+            this.textBox6.TabIndex = 14;
+            // 
+            // ProfileList
+            // 
+            this.ProfileList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBox1.Location = new System.Drawing.Point(3, 29);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(288, 423);
-            this.listBox1.TabIndex = 12;
-            this.listBox1.UseCompatibleStateImageBehavior = false;
-            this.listBox1.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listBox1_ItemSelectionChanged);
+            this.ProfileList.Location = new System.Drawing.Point(3, 29);
+            this.ProfileList.Name = "ProfileList";
+            this.ProfileList.Size = new System.Drawing.Size(288, 423);
+            this.ProfileList.TabIndex = 12;
+            this.ProfileList.UseCompatibleStateImageBehavior = false;
+            this.ProfileList.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ProfileListItemSelectionChanged);
             // 
-            // tabControl3
+            // ProfileTabs
             // 
-            this.tabControl3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.ProfileTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl3.Controls.Add(this.tabPage5);
-            this.tabControl3.Controls.Add(this.tabPage6);
-            this.tabControl3.Controls.Add(this.tabPage7);
-            this.tabControl3.Controls.Add(this.tabPage8);
-            this.tabControl3.Controls.Add(this.tabPage9);
-            this.tabControl3.Location = new System.Drawing.Point(4, 4);
-            this.tabControl3.Name = "tabControl3";
-            this.tabControl3.SelectedIndex = 0;
-            this.tabControl3.Size = new System.Drawing.Size(683, 449);
-            this.tabControl3.TabIndex = 14;
+            this.ProfileTabs.Controls.Add(this.tabPage5);
+            this.ProfileTabs.Controls.Add(this.tabPage6);
+            this.ProfileTabs.Controls.Add(this.tabPage7);
+            this.ProfileTabs.Controls.Add(this.tabPage8);
+            this.ProfileTabs.Controls.Add(this.tabPage9);
+            this.ProfileTabs.Location = new System.Drawing.Point(4, 4);
+            this.ProfileTabs.Name = "ProfileTabs";
+            this.ProfileTabs.SelectedIndex = 0;
+            this.ProfileTabs.Size = new System.Drawing.Size(683, 449);
+            this.ProfileTabs.TabIndex = 14;
+            this.ProfileTabs.SelectedIndexChanged += new System.EventHandler(this.ProfileTabsSelectedIndexChanged);
             // 
             // tabPage5
             // 
@@ -644,22 +626,15 @@
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
-            // label6
+            // SearchButton
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(4, 7);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(41, 13);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "Search";
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(51, 4);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(213, 20);
-            this.textBox6.TabIndex = 14;
-            this.textBox6.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox6_KeyPress);
+            this.SearchButton.Location = new System.Drawing.Point(221, 2);
+            this.SearchButton.Name = "SearchButton";
+            this.SearchButton.Size = new System.Drawing.Size(70, 23);
+            this.SearchButton.TabIndex = 15;
+            this.SearchButton.Text = "Search";
+            this.SearchButton.UseVisualStyleBackColor = true;
+            this.SearchButton.Click += new System.EventHandler(this.SearchButtonClick);
             // 
             // Form1
             // 
@@ -681,7 +656,7 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.tabControl3.ResumeLayout(false);
+            this.ProfileTabs.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
@@ -709,14 +684,12 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListView listBox1;
+        private System.Windows.Forms.ListView ProfileList;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox2;
@@ -742,7 +715,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.ListView listView2;
-        private System.Windows.Forms.TabControl tabControl3;
+        private System.Windows.Forms.TabControl ProfileTabs;
         private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.TabPage tabPage7;
         private System.Windows.Forms.TabPage tabPage8;
@@ -753,7 +726,7 @@
         private System.Windows.Forms.ComboBox comboBox7;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button SearchButton;
     }
 }
 
