@@ -259,14 +259,13 @@
             // 
             this.SearchComboBox.FormattingEnabled = true;
             this.SearchComboBox.Items.AddRange(new object[] {
-            "Names",
-            "All",
+            "Text",
             "Id"});
             this.SearchComboBox.Location = new System.Drawing.Point(163, 3);
             this.SearchComboBox.Name = "SearchComboBox";
             this.SearchComboBox.Size = new System.Drawing.Size(63, 21);
             this.SearchComboBox.TabIndex = 16;
-            this.SearchComboBox.Text = "Names";
+            this.SearchComboBox.Text = "Text";
             // 
             // SearchButton
             // 

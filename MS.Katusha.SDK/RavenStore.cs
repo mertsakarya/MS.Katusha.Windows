@@ -67,13 +67,7 @@ namespace MS.Katusha.SDK
             var result = new List<Profile>();
             var str = text.ToLowerInvariant();
             foreach (var profile in profiles) {
-                if(
-                    (profile.User.UserName.ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) > 0) ||
-                    (profile.User.Email.ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) > 0) ||
-                    (profile.Name.ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) > 0) ||
-                    (profile.Id.ToString(CultureInfo.InvariantCulture).ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) > 0) ||
-                    (profile.Guid.ToString().ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) > 0)
-                    )    
+                if(TextSearch(profile, str, criteria))    
                     result.Add(profile);
             }
             return result;
@@ -85,6 +79,17 @@ namespace MS.Katusha.SDK
             //            p.Name.IndexOf(str) > 0
             //        ).Take(1000).ToList();
             //}
+        }
+
+        private static bool TextSearch(Profile profile, string str, string criteria)
+        {
+            if (criteria == "Text")
+                return (profile.User.UserName.ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) >= 0) ||
+                       (profile.User.Email.ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) >= 0) ||
+                       (profile.Name.ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) >= 0) ||
+                       (profile.Guid.ToString().ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) >= 0);
+            else if(criteria == "Id")
+                return profile.Id == int.Parse(str);
         }
 
         public static Dictionary<string, RavenStore> RavenStores = new Dictionary<string, RavenStore>();
