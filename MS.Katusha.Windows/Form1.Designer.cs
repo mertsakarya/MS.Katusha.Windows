@@ -83,6 +83,7 @@
             this.tabPage11 = new System.Windows.Forms.TabPage();
             this.ProfileList = new System.Windows.Forms.ListView();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -149,6 +150,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.linkLabel2);
             this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.splitContainer1);
             this.tabPage1.Controls.Add(this.button5);
@@ -387,6 +389,7 @@
             this.DialogsGridView.RowTemplate.Height = 53;
             this.DialogsGridView.Size = new System.Drawing.Size(675, 210);
             this.DialogsGridView.TabIndex = 1;
+            this.DialogsGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogsGridView_CellClick);
             this.DialogsGridView.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogsGridView_RowEnter);
             this.DialogsGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DialogsGridView_UserDeletingRow);
             // 
@@ -399,6 +402,7 @@
             this.DialogGridView.RowTemplate.Height = 53;
             this.DialogGridView.Size = new System.Drawing.Size(675, 209);
             this.DialogGridView.TabIndex = 0;
+            this.DialogGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogGridView_CellClick);
             this.DialogGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DialogGridView_UserDeletingRow);
             // 
             // tabPage8
@@ -751,6 +755,17 @@
             this.dataGridView1.Size = new System.Drawing.Size(274, 393);
             this.dataGridView1.TabIndex = 18;
             // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(729, 500);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(65, 13);
+            this.linkLabel2.TabIndex = 18;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "Clear Cache";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -859,6 +874,7 @@
         private System.Windows.Forms.ListView ProfileList;
         private System.Windows.Forms.TabPage tabPage11;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }
 

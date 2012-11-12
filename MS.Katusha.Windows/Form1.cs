@@ -253,9 +253,15 @@ namespace MS.Katusha.Windows
             var profiles = _service.GetProfiles(text, SearchComboBox.Text);
             ProfileList.Items.Clear();
             ProcessList(profiles);
+            ConnectClick(null, null);
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) { _service.Explore(); }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            _service.ClearCache();
+        }
 
         private void DialogsGridView_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -310,6 +316,39 @@ namespace MS.Katusha.Windows
             textBox4.Text = string.Format(@"{0}\ProfileBackups\{1}.json", KatushaFolder, _profile.User.UserName);
         }
 
+        private void DialogsGridView_CellClick(object sender, DataGridViewCellEventArgs e) {
+            GetDataGridProfile(DialogsGridView, e.RowIndex, e.ColumnIndex);
+        }
+
+        private void DialogGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            GetDataGridProfile(DialogGridView, e.RowIndex, e.ColumnIndex);
+        }
+
+        private void GetDataGridProfile(DataGridView gridView, int rowIndex, int columnIndex)
+        {
+            long profileId = 0;
+            if (rowIndex > 0 && columnIndex > 0) {
+                var row = gridView.Rows[rowIndex];
+                var column = gridView.Columns[columnIndex];
+                if (column.Name == "Image") profileId = (long) row.Cells["ProfileId"].Value;
+                if (profileId > 0) {
+                    _profile = FindProfile(profileId);
+                    ProfileList.SelectedItems.Clear();
+                    foreach (ListViewItem item in ProfileList.Items) {
+                        var p = item.Tag as Profile;
+                        if (p == null || p.Id != profileId) continue;
+                        item.Selected = true;
+                        item.EnsureVisible();
+                        ProfileTabs.SelectTab(0);
+                        item.Focused = true;
+                        _profile = p;
+                        DisplayForProfileTab();
+                        break;
+                    }
+                }
+            } 
+        }
     }
 
 }

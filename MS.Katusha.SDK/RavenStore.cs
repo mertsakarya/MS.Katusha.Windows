@@ -4,8 +4,11 @@ using System.Globalization;
 using System.Linq;
 using MS.Katusha.Domain.Entities;
 using MS.Katusha.Domain.Service;
+using Raven.Abstractions.Data;
 using Raven.Client;
 using Raven.Client.Embedded;
+using Raven.Client.Indexes;
+using Raven.Database;
 
 namespace MS.Katusha.SDK
 {
@@ -55,6 +58,7 @@ namespace MS.Katusha.SDK
 
         public IList<Profile> GetProfiles()
         {
+
             using (var session = _docStore.OpenSession()) {
                 return session.Query<Profile>().Take(1000).ToList();
             }
@@ -90,6 +94,7 @@ namespace MS.Katusha.SDK
                        (profile.Guid.ToString().ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) >= 0);
             else if(criteria == "Id")
                 return profile.Id == int.Parse(str);
+            return false;
         }
 
         public static Dictionary<string, RavenStore> RavenStores = new Dictionary<string, RavenStore>();
@@ -100,6 +105,29 @@ namespace MS.Katusha.SDK
             var store = new RavenStore(key);
             RavenStores.Add(key, store);
             return store;
+        }
+        public void Clear<T>()
+        {
+            while (CanDelete25<T>()) ;
+        }
+
+        private bool CanDelete25<T>()
+        {
+            List<T> list = new List<T>();
+            using (var session = _docStore.OpenSession()) {
+                list = session.Query<T>().Take(25).ToList();
+                foreach (var i in list) {
+                    session.Delete(i);
+                }
+                session.SaveChanges();
+            }
+            return list.Count > 0;
+        }
+
+        public void DeleteAll()
+        {
+            Clear<Profile>();
+            Clear<LastUpdateObject>();
         }
     }
 }

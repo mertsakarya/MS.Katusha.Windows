@@ -36,6 +36,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Raven.Abstractions, Version=1.2.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MS.Katusha.Windows\bin\Debug\Raven.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.103.4\lib\net4\RestSharp.dll</HintPath>
     </Reference>
@@ -75,6 +79,10 @@
     <ProjectReference Include="..\..\ravendb\Raven.Client.Lightweight\Raven.Client.Lightweight.csproj">
       <Project>{4E087ECB-E7CA-4891-AC3C-3C76702715B6}</Project>
       <Name>Raven.Client.Lightweight</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ravendb\Raven.Database\Raven.Database.csproj">
+      <Project>{212823CD-25E1-41AC-92D1-D6DF4D53FC85}</Project>
+      <Name>Raven.Database</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -209,10 +209,7 @@ namespace MS.Katusha.SDK
                 .AddUrlSegment("key", guid.ToString());
             var response = client.Execute<List<Dialog>>(request);
             Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
-            if (response.Data == null) {
-                return new List<Dialog>();
-            }
-            return response.Data;
+            return response.Data ?? new List<Dialog>();
         }
 
         private string ReadFile(string fileName)
@@ -230,8 +227,6 @@ namespace MS.Katusha.SDK
         {
             return _ravenStore.GetProfiles(text, criteria);
         }
-
-        public void Explore() { Process.Start("explorer.exe", _dataFolder); }
 
         public IList<Conversation> GetDialog(long fromId, long toId)
         {
@@ -266,6 +261,17 @@ namespace MS.Katusha.SDK
             Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
             return response.Content;
 
+        }
+
+        public void Explore() { Process.Start("explorer.exe", _dataFolder); }
+
+        public void ClearCache()
+        {
+            var folder = new DirectoryInfo(_dataFolder + "\\Profiles");
+            folder.Delete(true);
+            //folder = new DirectoryInfo(_dataFolder + "\\Images");
+            //folder.Delete(true);
+            _ravenStore.DeleteAll();
         }
     }
 }
