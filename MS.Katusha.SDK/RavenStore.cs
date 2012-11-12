@@ -60,12 +60,12 @@ namespace MS.Katusha.SDK
             }
         }
 
-        public IList<Profile> GetProfiles(string text)
+        public IList<Profile> GetProfiles(string text, string criteria)
         {
             var profiles = GetProfiles();
             if (String.IsNullOrWhiteSpace(text)) return profiles;
             var result = new List<Profile>();
-            var str = text; //.ToLowerInvariant();
+            var str = text.ToLowerInvariant();
             foreach (var profile in profiles) {
                 if(
                     (profile.User.UserName.ToLowerInvariant().IndexOf(str, System.StringComparison.Ordinal) > 0) ||
@@ -85,6 +85,16 @@ namespace MS.Katusha.SDK
             //            p.Name.IndexOf(str) > 0
             //        ).Take(1000).ToList();
             //}
+        }
+
+        public static Dictionary<string, RavenStore> RavenStores = new Dictionary<string, RavenStore>();
+        public static RavenStore GetInstance(string key)
+        {
+            if (RavenStores.ContainsKey(key))
+                return RavenStores[key];
+            var store = new RavenStore(key);
+            RavenStores.Add(key, store);
+            return store;
         }
     }
 }

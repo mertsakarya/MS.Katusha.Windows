@@ -1,17 +1,22 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Windows.Forms;
 using MS.Katusha.Domain.Entities;
 using MS.Katusha.Domain.Raven.Entities;
 using MS.Katusha.Domain.Service;
 using MS.Katusha.Enumerations;
 using Newtonsoft.Json;
 using RestSharp;
+using Conversation = MS.Katusha.Domain.Raven.Entities.Conversation;
+using DialogResult = System.Windows.Forms.DialogResult;
 
 namespace MS.Katusha.SDK
 {
@@ -39,6 +44,11 @@ namespace MS.Katusha.SDK
     //    public string Email { get; set; }
     //    public DateTime LastUpdate { get; set; }
     //}
+    public class MSKatushaWinFormsConfiguration
+    {
+        public static readonly string[] Servers = new[] { "http://www.mskatusha.com/", "https://mskatusha.apphb.com/", "https://mskatushaeu.apphb.com/", "http://localhost:10595/", "http://localhost/" };
+        public static readonly string[] Buckets = new[] { "s.mskatusha.com", "MS.Katusha", "MS.Katusha.EU", "MS.Katusha.Test" };
+    }
 
     public class MSKatushaService
     {
@@ -63,7 +73,7 @@ namespace MS.Katusha.SDK
             if (!Directory.Exists(_dataFolder + "\\Profiles")) Directory.CreateDirectory(_dataFolder + "\\Profiles");
             if (!Directory.Exists(_dataFolder + "\\Data")) Directory.CreateDirectory(_dataFolder + "\\Data");
             _authenticator = new HttpBasicAuthenticator(_username, _password);
-            _ravenStore = new RavenStore(_dataFolder + "\\Data");
+            _ravenStore = RavenStore.GetInstance(_dataFolder + "\\Data");
         }
 
         public Image GetImage(Guid guid, S3FS s3Fs)
@@ -139,14 +149,19 @@ namespace MS.Katusha.SDK
             if (profiles == null) {
                 return new List<Profile>();
             }
-            var maxDate = new DateTime(1900, 1, 1);
-            foreach (var profile in profiles) {
-                _ravenStore.AddProfile(profile);
-                var file = profilesFolder + "\\" + profile.Guid + ".json";
-                WriteFile(file, JsonConvert.SerializeObject(profile));
-                if (profile.ModifiedDate > maxDate) maxDate = profile.ModifiedDate;
+            if (profiles.Count > 0) {
+                var dialogResult = MessageBox.Show(String.Format("Found {0} profiles to update.\r\n\r\nDo you want to update cache? [Yes]", profiles.Count), "FOUND UPDATE", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+                if (dialogResult == DialogResult.Yes) {
+                    var maxDate = new DateTime(1900, 1, 1);
+                    foreach (var profile in profiles) {
+                        _ravenStore.AddProfile(profile);
+                        var file = profilesFolder + "\\" + profile.Guid + ".json";
+                        WriteFile(file, JsonConvert.SerializeObject(profile));
+                        if (profile.ModifiedDate > maxDate) maxDate = profile.ModifiedDate;
+                    }
+                    _ravenStore.LastUpdate("Profiles", maxDate.AddSeconds(1));
+                }
             }
-            _ravenStore.LastUpdate("Profiles", maxDate);
             return _ravenStore.GetProfiles();
         }
 
@@ -211,9 +226,46 @@ namespace MS.Katusha.SDK
                 stream.Write(text);
         }
 
-        public IList<Profile> GetProfiles(string text)
+        public IList<Profile> GetProfiles(string text, string criteria)
         {
-            return _ravenStore.GetProfiles(text);
+            return _ravenStore.GetProfiles(text, criteria);
+        }
+
+        public void Explore() { Process.Start("explorer.exe", _dataFolder); }
+
+        public IList<Conversation> GetDialog(long fromId, long toId)
+        {
+            var client = new RestClient(_baseUrl) { Authenticator = _authenticator };
+            var request = new RestRequest("Api/GetDialog/{from}/{to}", Method.GET) { RequestFormat = DataFormat.Json }
+                .AddUrlSegment("from", fromId.ToString(CultureInfo.InvariantCulture))
+                .AddUrlSegment("to", toId.ToString(CultureInfo.InvariantCulture));
+            var response = client.Execute<List<Conversation>>(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
+            if (response.Data == null) {
+                return new List<Conversation>();
+            }
+            return response.Data;
+        }
+
+        public string DeleteMessage(Guid guid) {
+            var client = new RestClient(_baseUrl) { Authenticator = _authenticator };
+            var request = new RestRequest("Api/DeleteMessage/{guid}", Method.GET)
+                .AddUrlSegment("guid", guid.ToString());
+            var response = client.Execute(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
+            return response.Content;
+        }
+
+        public string DeleteDialog(Guid from, Guid to)
+        {
+            var client = new RestClient(_baseUrl) { Authenticator = _authenticator };
+            var request = new RestRequest("Api/DeleteDialog/{from}/{to}", Method.GET)
+                .AddUrlSegment("from", from.ToString())
+                .AddUrlSegment("to", to.ToString());
+            var response = client.Execute(request);
+            Result = String.Format("curl -u {0}:{1} {2}", _username, _password, response.ResponseUri);
+            return response.Content;
+
         }
     }
 }

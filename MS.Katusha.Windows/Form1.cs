@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -18,10 +19,8 @@ namespace MS.Katusha.Windows
         private Profile _profile = null;
         private static readonly string KatushaFolder = GetDropboxFolder() + "\\MS.Katusha";
         private readonly ICrawler _crawler = new TravelGirlsCrawler();
-        private static readonly string[] Servers = new[] {"http://www.mskatusha.com/", "https://mskatusha.apphb.com/", "https://mskatushaeu.apphb.com/", "http://localhost:10595/", "http://localhost/"};
-        private static readonly string[] Buckets = new[] { "s.mskatusha.com", "MS.Katusha", "MS.Katusha.EU", "MS.Katusha.Test" };
         private static readonly string[] Folders = new[] {"TravelGirls", "TravelGirlsProcessed", "TravelGirlsProcessedEU", "TravelGirlsProcessedSite"};
-
+        private IDictionary<long, Profile> _profiles = null;
 
         public Form1()
         {
@@ -29,24 +28,27 @@ namespace MS.Katusha.Windows
             textBox2.Text = "mertiko";
             textBox3.Text = "690514";
             button7.Enabled = !checkBox2.Checked;
-            comboBox1.Text = Servers[0];
-            comboBox1.Items.AddRange(Servers);
-            comboBox6.Text = Servers[0];
-            comboBox6.Items.AddRange(Servers);
+            comboBox1.Text = MSKatushaWinFormsConfiguration.Servers[0];
+            comboBox1.Items.AddRange(MSKatushaWinFormsConfiguration.Servers);
+            comboBox6.Text = MSKatushaWinFormsConfiguration.Servers[0];
+            comboBox6.Items.AddRange(MSKatushaWinFormsConfiguration.Servers);
             comboBox3.Text = Folders[0];
             comboBox3.Items.AddRange(Folders);
             comboBox5.Text = Folders[1];
             comboBox5.Items.AddRange(Folders);
-            comboBox7.Text = Buckets[0];
-            foreach (var bucket in Buckets) {
+            comboBox7.Text = MSKatushaWinFormsConfiguration.Buckets[0];
+            foreach (var bucket in MSKatushaWinFormsConfiguration.Buckets) {
                 comboBox7.Items.Add(new S3FS(bucket));
             }
+            
             comboBox7.SelectedIndex = 0;
             //button3_Click(null, null);
             FillFiles();
         }
 
-        private void OnCrawlItemReady(ICrawler crawler, CrawlItemResult crawlItemResult) {
+        #region Crawler
+        private void OnCrawlItemReady(ICrawler crawler, CrawlItemResult crawlItemResult)
+        {
             var jsonString = crawlItemResult.Output;
             var filename = crawlItemResult.UniqueId;
             var folder = KatushaFolder + "\\" + comboBox4.Text;
@@ -69,7 +71,7 @@ namespace MS.Katusha.Windows
                 }
         }
 
-    private static string GetDropboxFolder()
+        private static string GetDropboxFolder()
         {
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dropbox\\host.db");
             var dbBase64Text = Convert.FromBase64String(File.ReadAllLines(dbPath)[1]);
@@ -77,18 +79,81 @@ namespace MS.Katusha.Windows
             return folderPath;
         }
 
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e) { button7.Enabled = !checkBox2.Checked; }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            var lastpageNo = (int)numericUpDown1.Value;
+            listView1.Items.Clear();
+            for (var i = lastpageNo; i > 0; i--) {
+                _crawler.CrawlPageAsync(OnCrawlPageReady, comboBox2.Text, i.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.SelectedItems) {
+                _crawler.CrawlItemAsync(OnCrawlItemReady, comboBox2.Text, item.Text);
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            var toFolder = KatushaFolder + "\\" + comboBox5.Text;
+            if (!Directory.Exists(toFolder)) Directory.CreateDirectory(toFolder);
+            foreach (ListViewItem fileName in listView2.SelectedItems) {
+                var text = File.ReadAllText(fileName.Text);
+                if (!String.IsNullOrWhiteSpace(text))
+                    try {
+                        var moveFile = false;
+                        var userName = Path.GetFileNameWithoutExtension(fileName.Text);
+                        var guid = _service.GetProfileGuid(userName);
+                        if (guid == Guid.Empty) {
+                            var result = _service.SetProfile(text);
+                            textBox5.Text += String.Format("\r\n{0} {1}", result, fileName);
+                            if (result == HttpStatusCode.OK) {
+                                moveFile = true;
+                            }
+                        } else {
+                            moveFile = true;
+                            textBox5.Text += String.Format("\r\nUSER EXISTS {0}", userName);
+                        }
+                        if (moveFile) File.Move(fileName.Text, toFolder + "\\" + Path.GetFileName(fileName.Text));
+
+                    } catch (Exception ex) {
+                        MessageBox.Show(ex.Message);
+                    }
+            }
+        }
+        private void FillFiles()
+        {
+            var fromFolder = KatushaFolder + "\\" + comboBox3.Text;
+            if (!Directory.Exists(fromFolder)) Directory.CreateDirectory(fromFolder);
+            var files = Directory.GetFiles(fromFolder, "*.json");
+            listView2.Items.Clear();
+            foreach (var file in files)
+                listView2.Items.Add(new ListViewItem(file));
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FillFiles();
+        }
+        #endregion
+        
         private void ProcessList(IList<Profile> list)
         {
             textBox5.Text += "\r\n" + _service.Result;
             label1.Text = list.Count.ToString(CultureInfo.InvariantCulture);
-            var imageList = new ImageList {ImageSize = new Size(35, 48), ColorDepth = ColorDepth.Depth24Bit};
+            var imageList = new ImageList {ImageSize = new Size(35, 48), ColorDepth = ColorDepth.Depth32Bit};
             ProfileList.BeginUpdate();
             try {
                 ProfileList.View = View.LargeIcon;
                 ProfileList.Items.Clear();
                 for (var i = 0; i < list.Count; i++) {
                     var item = list[i];
-                    var listViewItem = new ListViewItem {Tag = item, Text = item.User.UserName + " / " + item.Name, ImageIndex = i, ToolTipText = item.User.Email};
+                    var listViewItem = new ListViewItem { Tag = item, Text = item.User.UserName + " / " + item.Name, ImageIndex = i, ToolTipText = item.User.Email };
                     var image = _service.GetImage(item.ProfilePhotoGuid, comboBox7.SelectedItem as S3FS);
                     imageList.Images.Add(image);
                     ProfileList.Items.Add(listViewItem);
@@ -105,7 +170,12 @@ namespace MS.Katusha.Windows
         {
             _service = new MSKatushaService(textBox2.Text, textBox3.Text, comboBox1.Text, Application.LocalUserAppDataPath);
             var list = _service.GetProfiles();
+            _profiles = new Dictionary<long, Profile>(list.Count);
+            foreach(var profile in list)
+                _profiles.Add(profile.Id, profile);
             ProcessList(list);
+            dataGridView1.DataSource = list;
+            ConnectButton.Text = "Re-Connect";
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -126,73 +196,11 @@ namespace MS.Katusha.Windows
 
         private Profile FindProfile(long id)
         {
-            foreach(ListViewItem item in ProfileList.Items) {
-                var profile = item.Tag as Profile;
-                if (profile.Id == id) return profile;
-            }
+            if(_profiles.ContainsKey(id))
+                return _profiles[id];
             return null;
         }
-        private void checkBox2_CheckedChanged(object sender, EventArgs e) { button7.Enabled = !checkBox2.Checked; }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            var lastpageNo = (int) numericUpDown1.Value;
-            listView1.Items.Clear();
-            for (var i = lastpageNo; i > 0; i--) {
-                _crawler.CrawlPageAsync(OnCrawlPageReady, comboBox2.Text, i.ToString(CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            foreach(ListViewItem item in listView1.SelectedItems) {
-                _crawler.CrawlItemAsync(OnCrawlItemReady, comboBox2.Text, item.Text);
-            }
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-            var toFolder = KatushaFolder + "\\" + comboBox5.Text;
-            if (!Directory.Exists(toFolder)) Directory.CreateDirectory(toFolder);
-            foreach(ListViewItem fileName in listView2.SelectedItems) {
-                var text = File.ReadAllText(fileName.Text);
-                if(!String.IsNullOrWhiteSpace(text))
-                    try {
-                        var moveFile = false;
-                        var userName = Path.GetFileNameWithoutExtension(fileName.Text);
-                        var guid = _service.GetProfileGuid(userName);
-                        if (guid == Guid.Empty) {
-                            var result = _service.SetProfile(text);
-                            textBox5.Text += String.Format("\r\n{0} {1}", result, fileName);
-                            if (result == HttpStatusCode.OK) {
-                                moveFile = true;
-                            }
-                        } else {
-                            moveFile = true;
-                            textBox5.Text += String.Format("\r\nUSER EXISTS {0}", userName);
-                        }
-                        if(moveFile) File.Move(fileName.Text, toFolder + "\\" + Path.GetFileName(fileName.Text));
-                        
-                    } catch(Exception ex) {
-                        MessageBox.Show(ex.Message);
-                    }
-            }
-        }
-        private void FillFiles()
-        {
-            var fromFolder = KatushaFolder + "\\" + comboBox3.Text;
-            if (!Directory.Exists(fromFolder)) Directory.CreateDirectory(fromFolder);
-            var files = Directory.GetFiles(fromFolder, "*.json");
-            listView2.Items.Clear();
-            foreach(var file in files)
-                listView2.Items.Add(new ListViewItem(file));
-        }
-
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            FillFiles();
-        }
-
+        
         private void ProfileTabsSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ProfileList.SelectedItems.Count <= 0) return;
@@ -200,29 +208,26 @@ namespace MS.Katusha.Windows
             DisplayForProfileTab();
         }
 
-        private void ProfileListItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-            if (ProfileList.SelectedItems.Count <= 0) return;
-            _profile = ProfileList.SelectedItems[0].Tag as Profile;
-            if (_profile == null) return;
-            DisplayForProfileTab();
-            textBox5.Text += "\r\n" + _service.Result;
-            textBox4.Text = string.Format(@"{0}\ProfileBackups\{1}.json", KatushaFolder, _profile.User.UserName);
-        }
-
         private void DisplayForProfileTab()
         {
             if (_profile == null) return;
+
+            DialogGridView.Rows.Clear();
+            DialogGridView.DataSource = null;
+
             var guid = _profile.Guid;
             switch (ProfileTabs.SelectedIndex) {
                 case 0:
                     var uri = new Uri(comboBox1.Text);
-                    var url = String.Format("{0}/Profiles/Show/{1}", uri.AbsoluteUri, guid);
+                    var url = String.Format("{0}Profiles/Show/{1}", uri.AbsoluteUri, guid);
                     textBox5.Text += "\r\n" + url;
                     webBrowser1.Navigate(url);
                     break;
                 case 1:
-                    textBox1.Text = _service.GetProfile(guid);
+                    textBox1.Text = "";
+                    var str = _service.GetProfile(guid);
+                    textBox1.Text = str;
+                    textBox5.Text += "\r\n" + _service.Result;
                     break;
                 case 2:
                     var list = _service.GetDialogs(_profile.Guid);
@@ -234,7 +239,9 @@ namespace MS.Katusha.Windows
                         var dialog = new WinDialog() {Image = image, Name = p.Name, ProfileId = item.ProfileId, Count = item.Count, LastReceived = item.LastReceivedDate, LastSent = item.LastSentDate, UnreadReceivedCount = item.UnreadReceivedCount, UnreadSentCount = item.UnreadSentCount};
                         dialogs.Add(dialog);
                     }
-                    dataGridView1.DataSource = dialogs;
+                    DialogsGridView.DataSource = dialogs;
+                    var dataGridViewColumn = DialogsGridView.Columns["ProfileId"];
+                    if (dataGridViewColumn != null) dataGridViewColumn.Visible = false;
                     break;
             }
 
@@ -242,11 +249,67 @@ namespace MS.Katusha.Windows
 
         private void SearchButtonClick(object sender, EventArgs e)
         {
-            var text = textBox6.Text;
-            var profiles = _service.GetProfiles(text);
+            var text = SearchTextBox.Text;
+            var profiles = _service.GetProfiles(text, SearchComboBox.Text);
             ProfileList.Items.Clear();
             ProcessList(profiles);
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) { _service.Explore(); }
+
+        private void DialogsGridView_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_profile == null) return;
+            var row = DialogsGridView.Rows[e.RowIndex];
+
+            var list = _service.GetDialog(_profile.Id, (long)row.Cells[0].Value);
+            var dialogs = new BindingSource();// <WinDialog>(list.Count);
+            foreach (var item in list) {
+
+                var photoGuid = item.FromPhotoGuid;
+                var name = item.FromName;
+                var id = item.FromId;
+                var guid = item.FromGuid;
+                var image = _service.GetImage(photoGuid, comboBox7.SelectedItem as S3FS);
+                var dialog = new { Guid = item.Guid, Image = image, Name = name, ProfileId = id, ProfileGuid = guid, Subject = item.Subject, Message = item.Message, ReadDate = item.ReadDate };
+                dialogs.Add(dialog);
+            }
+            DialogGridView.DataSource = dialogs;
+            var dataGridViewColumn = DialogGridView.Columns["ProfileId"];
+            if (dataGridViewColumn != null) dataGridViewColumn.Visible = false;
+            dataGridViewColumn = DialogGridView.Columns["ProfileGuid"];
+            if (dataGridViewColumn != null) dataGridViewColumn.Visible = false;
+            dataGridViewColumn = DialogGridView.Columns["Guid"];
+            if (dataGridViewColumn != null) dataGridViewColumn.Visible = false;
+        }
+
+        private void DialogGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            if (_profile == null) return;
+            var row = e.Row;
+            var guid = (Guid) row.Cells["Guid"].Value;
+            _service.DeleteMessage(guid);
+        }
+
+        private void DialogsGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            if (_profile == null) return;
+            var row = e.Row;
+            var toId = (long)row.Cells["ProfileId"].Value;
+            var toProfile = FindProfile(toId);
+            if (toProfile == null) return;
+            _service.DeleteDialog(_profile.Guid, toProfile.Guid);
+        }
+
+        private void ProfileList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ProfileList.SelectedItems.Count <= 0) return;
+            _profile = ProfileList.SelectedItems[0].Tag as Profile;
+            if (_profile == null) return;
+            DisplayForProfileTab();
+            textBox4.Text = string.Format(@"{0}\ProfileBackups\{1}.json", KatushaFolder, _profile.User.UserName);
+        }
+
     }
 
 }

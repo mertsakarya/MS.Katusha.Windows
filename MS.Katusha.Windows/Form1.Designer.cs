@@ -32,21 +32,25 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.comboBox7 = new System.Windows.Forms.ComboBox();
-            this.button3 = new System.Windows.Forms.Button();
+            this.ConnectButton = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.ProfileList = new System.Windows.Forms.ListView();
+            this.SearchComboBox = new System.Windows.Forms.ComboBox();
+            this.SearchButton = new System.Windows.Forms.Button();
+            this.SearchTextBox = new System.Windows.Forms.TextBox();
             this.ProfileTabs = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.DialogsGridView = new System.Windows.Forms.DataGridView();
+            this.DialogGridView = new System.Windows.Forms.DataGridView();
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.button5 = new System.Windows.Forms.Button();
@@ -74,7 +78,11 @@
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.button8 = new System.Windows.Forms.Button();
-            this.SearchButton = new System.Windows.Forms.Button();
+            this.ProfilesTab = new System.Windows.Forms.TabControl();
+            this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.ProfileList = new System.Windows.Forms.ListView();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -86,7 +94,12 @@
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabPage7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DialogsGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DialogGridView)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -95,6 +108,10 @@
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage4.SuspendLayout();
+            this.ProfilesTab.SuspendLayout();
+            this.tabPage10.SuspendLayout();
+            this.tabPage11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -148,8 +165,9 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.linkLabel1);
             this.panel1.Controls.Add(this.comboBox7);
-            this.panel1.Controls.Add(this.button3);
+            this.panel1.Controls.Add(this.ConnectButton);
             this.panel1.Controls.Add(this.textBox3);
             this.panel1.Controls.Add(this.textBox2);
             this.panel1.Controls.Add(this.comboBox1);
@@ -157,6 +175,18 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(991, 33);
             this.panel1.TabIndex = 17;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(861, 11);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(120, 13);
+            this.linkLabel1.TabIndex = 16;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Open Local Data Folder";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // comboBox7
             // 
@@ -166,15 +196,15 @@
             this.comboBox7.Size = new System.Drawing.Size(121, 21);
             this.comboBox7.TabIndex = 15;
             // 
-            // button3
+            // ConnectButton
             // 
-            this.button3.Location = new System.Drawing.Point(542, 7);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(68, 23);
-            this.button3.TabIndex = 12;
-            this.button3.Text = "Connect";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.ConnectClick);
+            this.ConnectButton.Location = new System.Drawing.Point(542, 7);
+            this.ConnectButton.Name = "ConnectButton";
+            this.ConnectButton.Size = new System.Drawing.Size(96, 23);
+            this.ConnectButton.TabIndex = 12;
+            this.ConnectButton.Text = "Connect";
+            this.ConnectButton.UseVisualStyleBackColor = true;
+            this.ConnectButton.Click += new System.EventHandler(this.ConnectClick);
             // 
             // textBox3
             // 
@@ -213,9 +243,10 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.ProfilesTab);
+            this.splitContainer1.Panel1.Controls.Add(this.SearchComboBox);
             this.splitContainer1.Panel1.Controls.Add(this.SearchButton);
-            this.splitContainer1.Panel1.Controls.Add(this.textBox6);
-            this.splitContainer1.Panel1.Controls.Add(this.ProfileList);
+            this.splitContainer1.Panel1.Controls.Add(this.SearchTextBox);
             // 
             // splitContainer1.Panel2
             // 
@@ -224,24 +255,35 @@
             this.splitContainer1.SplitterDistance = 294;
             this.splitContainer1.TabIndex = 16;
             // 
-            // textBox6
+            // SearchComboBox
             // 
-            this.textBox6.Location = new System.Drawing.Point(7, 4);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(208, 20);
-            this.textBox6.TabIndex = 14;
+            this.SearchComboBox.FormattingEnabled = true;
+            this.SearchComboBox.Items.AddRange(new object[] {
+            "Names",
+            "All",
+            "Id"});
+            this.SearchComboBox.Location = new System.Drawing.Point(163, 3);
+            this.SearchComboBox.Name = "SearchComboBox";
+            this.SearchComboBox.Size = new System.Drawing.Size(63, 21);
+            this.SearchComboBox.TabIndex = 16;
+            this.SearchComboBox.Text = "Names";
             // 
-            // ProfileList
+            // SearchButton
             // 
-            this.ProfileList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ProfileList.Location = new System.Drawing.Point(3, 29);
-            this.ProfileList.Name = "ProfileList";
-            this.ProfileList.Size = new System.Drawing.Size(288, 423);
-            this.ProfileList.TabIndex = 12;
-            this.ProfileList.UseCompatibleStateImageBehavior = false;
-            this.ProfileList.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ProfileListItemSelectionChanged);
+            this.SearchButton.Location = new System.Drawing.Point(232, 2);
+            this.SearchButton.Name = "SearchButton";
+            this.SearchButton.Size = new System.Drawing.Size(59, 23);
+            this.SearchButton.TabIndex = 15;
+            this.SearchButton.Text = "Search";
+            this.SearchButton.UseVisualStyleBackColor = true;
+            this.SearchButton.Click += new System.EventHandler(this.SearchButtonClick);
+            // 
+            // SearchTextBox
+            // 
+            this.SearchTextBox.Location = new System.Drawing.Point(7, 4);
+            this.SearchTextBox.Name = "SearchTextBox";
+            this.SearchTextBox.Size = new System.Drawing.Size(148, 20);
+            this.SearchTextBox.TabIndex = 14;
             // 
             // ProfileTabs
             // 
@@ -296,22 +338,21 @@
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.textBox1.Location = new System.Drawing.Point(1, 3);
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.textBox1.Location = new System.Drawing.Point(3, 3);
             this.textBox1.MaxLength = 32767000;
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(672, 417);
+            this.textBox1.Size = new System.Drawing.Size(669, 417);
             this.textBox1.TabIndex = 15;
+            this.textBox1.WordWrap = false;
             // 
             // tabPage7
             // 
-            this.tabPage7.Controls.Add(this.dataGridView1);
+            this.tabPage7.Controls.Add(this.splitContainer3);
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Size = new System.Drawing.Size(675, 423);
@@ -319,16 +360,47 @@
             this.tabPage7.Text = "Messages";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
-            // dataGridView1
+            // splitContainer3
             // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(669, 417);
-            this.dataGridView1.TabIndex = 0;
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.DialogsGridView);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.DialogGridView);
+            this.splitContainer3.Size = new System.Drawing.Size(675, 423);
+            this.splitContainer3.SplitterDistance = 210;
+            this.splitContainer3.TabIndex = 1;
+            // 
+            // DialogsGridView
+            // 
+            this.DialogsGridView.AllowUserToAddRows = false;
+            this.DialogsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DialogsGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DialogsGridView.Location = new System.Drawing.Point(0, 0);
+            this.DialogsGridView.Name = "DialogsGridView";
+            this.DialogsGridView.RowTemplate.Height = 53;
+            this.DialogsGridView.Size = new System.Drawing.Size(675, 210);
+            this.DialogsGridView.TabIndex = 1;
+            this.DialogsGridView.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogsGridView_RowEnter);
+            this.DialogsGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DialogsGridView_UserDeletingRow);
+            // 
+            // DialogGridView
+            // 
+            this.DialogGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DialogGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DialogGridView.Location = new System.Drawing.Point(0, 0);
+            this.DialogGridView.Name = "DialogGridView";
+            this.DialogGridView.RowTemplate.Height = 53;
+            this.DialogGridView.Size = new System.Drawing.Size(675, 209);
+            this.DialogGridView.TabIndex = 0;
+            this.DialogGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DialogGridView_UserDeletingRow);
             // 
             // tabPage8
             // 
@@ -626,15 +698,59 @@
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
-            // SearchButton
+            // ProfilesTab
             // 
-            this.SearchButton.Location = new System.Drawing.Point(221, 2);
-            this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(70, 23);
-            this.SearchButton.TabIndex = 15;
-            this.SearchButton.Text = "Search";
-            this.SearchButton.UseVisualStyleBackColor = true;
-            this.SearchButton.Click += new System.EventHandler(this.SearchButtonClick);
+            this.ProfilesTab.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProfilesTab.Controls.Add(this.tabPage10);
+            this.ProfilesTab.Controls.Add(this.tabPage11);
+            this.ProfilesTab.Location = new System.Drawing.Point(3, 30);
+            this.ProfilesTab.Name = "ProfilesTab";
+            this.ProfilesTab.SelectedIndex = 0;
+            this.ProfilesTab.Size = new System.Drawing.Size(288, 425);
+            this.ProfilesTab.TabIndex = 18;
+            // 
+            // tabPage10
+            // 
+            this.tabPage10.Controls.Add(this.ProfileList);
+            this.tabPage10.Location = new System.Drawing.Point(4, 22);
+            this.tabPage10.Name = "tabPage10";
+            this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage10.Size = new System.Drawing.Size(280, 399);
+            this.tabPage10.TabIndex = 0;
+            this.tabPage10.Text = "ListView";
+            this.tabPage10.UseVisualStyleBackColor = true;
+            // 
+            // tabPage11
+            // 
+            this.tabPage11.Controls.Add(this.dataGridView1);
+            this.tabPage11.Location = new System.Drawing.Point(4, 22);
+            this.tabPage11.Name = "tabPage11";
+            this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage11.Size = new System.Drawing.Size(280, 399);
+            this.tabPage11.TabIndex = 1;
+            this.tabPage11.Text = "GridView";
+            this.tabPage11.UseVisualStyleBackColor = true;
+            // 
+            // ProfileList
+            // 
+            this.ProfileList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ProfileList.Location = new System.Drawing.Point(3, 3);
+            this.ProfileList.Name = "ProfileList";
+            this.ProfileList.Size = new System.Drawing.Size(274, 393);
+            this.ProfileList.TabIndex = 13;
+            this.ProfileList.UseCompatibleStateImageBehavior = false;
+            this.ProfileList.SelectedIndexChanged += new System.EventHandler(this.ProfileList_SelectedIndexChanged);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(274, 393);
+            this.dataGridView1.TabIndex = 18;
             // 
             // Form1
             // 
@@ -661,7 +777,12 @@
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
             this.tabPage7.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.DialogsGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DialogGridView)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
@@ -672,6 +793,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
+            this.ProfilesTab.ResumeLayout(false);
+            this.tabPage10.ResumeLayout(false);
+            this.tabPage11.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -684,13 +809,12 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListView ProfileList;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button ConnectButton;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.ComboBox comboBox1;
@@ -724,9 +848,18 @@
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.ComboBox comboBox7;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox SearchTextBox;
         private System.Windows.Forms.Button SearchButton;
+        private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.DataGridView DialogsGridView;
+        private System.Windows.Forms.DataGridView DialogGridView;
+        private System.Windows.Forms.ComboBox SearchComboBox;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.TabControl ProfilesTab;
+        private System.Windows.Forms.TabPage tabPage10;
+        private System.Windows.Forms.ListView ProfileList;
+        private System.Windows.Forms.TabPage tabPage11;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 
