@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using MS.Katusha.Crawler;
 using MS.Katusha.Domain.Entities;
 using MS.Katusha.Domain.Service;
+using MS.Katusha.Enumerations;
 using MS.Katusha.SDK;
 
 namespace MS.Katusha.Windows
@@ -109,7 +110,7 @@ namespace MS.Katusha.Windows
                         var moveFile = false;
                         var userName = Path.GetFileNameWithoutExtension(fileName.Text);
                         var guid = _service.GetProfileGuid(userName);
-                        if (guid == Guid.Empty) {
+                        if (guid == System.Guid.Empty) {
                             var result = _service.SetProfile(text);
                             textBox5.Text += String.Format("\r\n{0} {1}", result, fileName);
                             if (result == HttpStatusCode.OK) {
@@ -146,7 +147,7 @@ namespace MS.Katusha.Windows
         {
             textBox5.Text += "\r\n" + _service.Result;
             label1.Text = list.Count.ToString(CultureInfo.InvariantCulture);
-            var imageList = new ImageList {ImageSize = new Size(35, 48), ColorDepth = ColorDepth.Depth32Bit};
+            var imageList = new ImageList {ImageSize = new Size(80, 106), ColorDepth = ColorDepth.Depth32Bit};
             ProfileList.BeginUpdate();
             try {
                 ProfileList.View = View.LargeIcon;
@@ -235,16 +236,39 @@ namespace MS.Katusha.Windows
                     foreach(var item in list) {
                         var p = FindProfile(item.ProfileId);
                         if (p == null) continue;
-                        var image = _service.GetImage(p.ProfilePhotoGuid, comboBox7.SelectedItem as S3FS);
+                        var image = _service.GetImage(p.ProfilePhotoGuid, comboBox7.SelectedItem as S3FS, PhotoType.Icon);
                         var dialog = new WinDialog() {Image = image, Name = p.Name, ProfileId = item.ProfileId, Count = item.Count, LastReceived = item.LastReceivedDate, LastSent = item.LastSentDate, UnreadReceivedCount = item.UnreadReceivedCount, UnreadSentCount = item.UnreadSentCount};
                         dialogs.Add(dialog);
                     }
                     DialogsGridView.DataSource = dialogs;
                     var dataGridViewColumn = DialogsGridView.Columns["ProfileId"];
                     if (dataGridViewColumn != null) dataGridViewColumn.Visible = false;
+                    dataGridViewColumn = DialogsGridView.Columns["Image"];
+                    if (dataGridViewColumn != null) {
+                        dataGridViewColumn.Width = 40;
+                    }
+                    break;
+                case 4:
+                    SetPhotos(_profile);
                     break;
             }
 
+        }
+
+        private void SetPhotos(Profile profile)
+        {
+            PhotoGridView.Rows.Clear();
+            foreach(var photo in profile.Photos) {
+                var row = new DataGridViewRow();
+                row.Height = 106;
+                var imageCell = new DataGridViewImageCell {Description = photo.FileName, Value = _service.GetImage(photo.Guid, comboBox7.SelectedItem as S3FS), };
+                var statusCell = new DataGridViewCheckBoxCell {Value = (photo.Status == (byte)PhotoStatus.Ready)};
+                row.Cells.Add(imageCell);
+                row.Cells.Add(statusCell);
+                row.Cells.Add(new DataGridViewTextBoxCell(){Value = photo.Guid});
+                row.Tag = photo;
+                PhotoGridView.Rows.Add(row);
+            }
         }
 
         private void SearchButtonClick(object sender, EventArgs e)
@@ -276,7 +300,7 @@ namespace MS.Katusha.Windows
                 var name = item.FromName;
                 var id = item.FromId;
                 var guid = item.FromGuid;
-                var image = _service.GetImage(photoGuid, comboBox7.SelectedItem as S3FS);
+                var image = _service.GetImage(photoGuid, comboBox7.SelectedItem as S3FS, PhotoType.Icon);
                 var dialog = new { Guid = item.Guid, Image = image, Name = name, ProfileId = id, ProfileGuid = guid, Subject = item.Subject, Message = item.Message, ReadDate = item.ReadDate };
                 dialogs.Add(dialog);
             }
@@ -287,6 +311,10 @@ namespace MS.Katusha.Windows
             if (dataGridViewColumn != null) dataGridViewColumn.Visible = false;
             dataGridViewColumn = DialogGridView.Columns["Guid"];
             if (dataGridViewColumn != null) dataGridViewColumn.Visible = false;
+            dataGridViewColumn = DialogGridView.Columns["Image"];
+            if (dataGridViewColumn != null) {
+                dataGridViewColumn.Width = 40;
+            }
         }
 
         private void DialogGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
@@ -349,6 +377,16 @@ namespace MS.Katusha.Windows
                 }
             } 
         }
+
+        private void PhotoGridView_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            var photo = PhotoGridView.Rows[e.RowIndex].Tag as Photo;
+            if (photo != null) {
+                var image = _service.GetImage(photo.Guid, comboBox7.SelectedItem as S3FS, PhotoType.Large);
+                PhotoBox.Image = image;
+            }
+        }
+
     }
 
 }

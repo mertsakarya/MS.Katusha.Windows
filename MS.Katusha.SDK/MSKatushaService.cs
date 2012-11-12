@@ -76,14 +76,15 @@ namespace MS.Katusha.SDK
             _ravenStore = RavenStore.GetInstance(_dataFolder + "\\Data");
         }
 
-        public Image GetImage(Guid guid, S3FS s3Fs)
+        public Image GetImage(Guid guid, S3FS s3Fs, PhotoType photoType = PhotoType.Thumbnail)
         {
             if(s3Fs == null) throw new ArgumentNullException("S3FS");
+            //var photoType = PhotoType.Thumbnail;
             var path = _dataFolder + "\\Images";
-            var file = path + "\\4-" + guid + ".jpg";
+            var file = String.Format("{0}\\{1}-{2}.jpg", path, (byte)photoType, guid);
             if (!File.Exists(file)) {
                 var s3 = s3Fs.FileSystem;
-                var url = s3.GetPhotoUrl(guid, PhotoType.Icon);
+                var url = s3.GetPhotoUrl(guid, photoType);
                 var webClient = new WebClient();
                 webClient.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;" + ")");
                 webClient.Headers["Accept"] = "/";
