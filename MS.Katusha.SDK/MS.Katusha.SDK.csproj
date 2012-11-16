@@ -34,11 +34,19 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Raven.Abstractions, Version=1.2.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MS.Katusha.Windows\bin\Debug\Raven.Abstractions.dll</HintPath>
+      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.1.0.972\lib\net40\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.1.0.972\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.103.4\lib\net4\RestSharp.dll</HintPath>
@@ -55,13 +63,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MSKatushaService.cs" />
+    <Compile Include="Services\BaseMSKatushaService.cs" />
+    <Compile Include="Services\MSKatushaListService.cs" />
+    <Compile Include="Services\MSKatushaService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RavenStore.cs" />
+    <Compile Include="Raven\RavenStore.cs" />
+    <Compile Include="Raven\RavenStoreListManager.cs" />
+    <Compile Include="Raven\DocumentStoreManager.cs" />
+    <Compile Include="Raven\RavenRepository.cs" />
     <Compile Include="S3FS.cs" />
+    <Compile Include="Services\MSKatushaServiceSettings.cs" />
+    <Compile Include="Services\MSKatushaWinFormsConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MS.Katusha\MS.Katusha.Domain\MS.Katusha.csproj">
@@ -72,20 +89,29 @@
       <Project>{46BB085A-B2F4-4CB7-A939-D335C1C660D5}</Project>
       <Name>MS.Katusha.FileSystems</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ravendb\Raven.Client.Embedded\Raven.Client.Embedded.csproj">
-      <Project>{0F5287AD-37B3-4375-BA3E-3CED64B1FC5B}</Project>
+    <ProjectReference Include="..\RavenDB\Raven.Client.Embedded\Raven.Client.Embedded.csproj">
+      <Project>{0f5287ad-37b3-4375-ba3e-3ced64b1fc5b}</Project>
       <Name>Raven.Client.Embedded</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ravendb\Raven.Client.Lightweight\Raven.Client.Lightweight.csproj">
-      <Project>{4E087ECB-E7CA-4891-AC3C-3C76702715B6}</Project>
-      <Name>Raven.Client.Lightweight</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ravendb\Raven.Database\Raven.Database.csproj">
-      <Project>{212823CD-25E1-41AC-92D1-D6DF4D53FC85}</Project>
+    <ProjectReference Include="..\RavenDB\Raven.Database\Raven.Database.csproj">
+      <Project>{212823cd-25e1-41ac-92d1-d6df4d53fc85}</Project>
       <Name>Raven.Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RavenDB\Raven.Munin\Raven.Munin.csproj">
+      <Project>{486537c2-edf7-404f-9cfb-eee25996df5f}</Project>
+      <Name>Raven.Munin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RavenDB\Raven.Storage.Esent\Raven.Storage.Esent.csproj">
+      <Project>{9dee8674-d0cd-430d-bd9b-6cd95f3cab22}</Project>
+      <Name>Raven.Storage.Esent</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RavenDB\Raven.Storage.Managed\Raven.Storage.Managed.csproj">
+      <Project>{da99a419-e137-40db-9495-0c363b479d4b}</Project>
+      <Name>Raven.Storage.Managed</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Raven.Studio.xap" />
     <Content Include="Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

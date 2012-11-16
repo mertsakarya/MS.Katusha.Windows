@@ -17,7 +17,7 @@ namespace MS.Katusha.Crawler
     public class TravelGirlsCrawler : ICrawler
     {
         private const string BaseUrl = "http://www.travelgirls.com";
-        private static readonly string KatushaFolder = GetDropboxFolder() + "\\MS.Katusha";
+        private static readonly string KatushaFolder = ""; //GetDropboxFolder() + "\\MS.Katusha";
 
         private static string GetDropboxFolder()
         {

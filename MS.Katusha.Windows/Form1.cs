@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -8,20 +6,20 @@ using System.Net;
 using System.Windows.Forms;
 using MS.Katusha.Crawler;
 using MS.Katusha.Domain.Entities;
-using MS.Katusha.Domain.Service;
 using MS.Katusha.Enumerations;
 using MS.Katusha.SDK;
+using MS.Katusha.SDK.Services;
 
 namespace MS.Katusha.Windows
 {
     public partial class Form1 : Form
     {
         private MSKatushaService _service;
-        private Profile _profile = null;
+        private MSKatushaListService<Profile, ListViewItem> _profileListService;
+        private Profile _profile;
         private static readonly string KatushaFolder = GetDropboxFolder() + "\\MS.Katusha";
         private readonly ICrawler _crawler = new TravelGirlsCrawler();
         private static readonly string[] Folders = new[] {"TravelGirls", "TravelGirlsProcessed", "TravelGirlsProcessedEU", "TravelGirlsProcessedSite"};
-        private IDictionary<long, Profile> _profiles = null;
 
         public Form1()
         {
@@ -41,7 +39,7 @@ namespace MS.Katusha.Windows
             foreach (var bucket in MSKatushaWinFormsConfiguration.Buckets) {
                 comboBox7.Items.Add(new S3FS(bucket));
             }
-            
+            ProfileList.VirtualMode = true;
             comboBox7.SelectedIndex = 0;
             //button3_Click(null, null);
             FillFiles();
@@ -143,40 +141,11 @@ namespace MS.Katusha.Windows
         }
         #endregion
         
-        private void ProcessList(IList<Profile> list)
+        private void ProcessList(int total)
         {
-            textBox5.Text += "\r\n" + _service.Result;
-            label1.Text = list.Count.ToString(CultureInfo.InvariantCulture);
-            var imageList = new ImageList {ImageSize = new Size(80, 106), ColorDepth = ColorDepth.Depth32Bit};
-            ProfileList.BeginUpdate();
-            try {
-                ProfileList.View = View.LargeIcon;
-                ProfileList.Items.Clear();
-                for (var i = 0; i < list.Count; i++) {
-                    var item = list[i];
-                    var listViewItem = new ListViewItem { Tag = item, Text = item.User.UserName + " / " + item.Name, ImageIndex = i, ToolTipText = item.User.Email };
-                    var image = _service.GetImage(item.ProfilePhotoGuid, comboBox7.SelectedItem as S3FS);
-                    imageList.Images.Add(image);
-                    ProfileList.Items.Add(listViewItem);
-                }
-                //listBox1.SmallImageList = imageList;
-                ProfileList.LargeImageList = imageList;
-            } finally {
-                ProfileList.EndUpdate();
-            }
-            //listBox1.StateImageList = imageList;
-        }
-
-        private void ConnectClick(object sender, EventArgs e)
-        {
-            _service = new MSKatushaService(textBox2.Text, textBox3.Text, comboBox1.Text, Application.LocalUserAppDataPath);
-            var list = _service.GetProfiles();
-            _profiles = new Dictionary<long, Profile>(list.Count);
-            foreach(var profile in list)
-                _profiles.Add(profile.Id, profile);
-            ProcessList(list);
-            dataGridView1.DataSource = list;
-            ConnectButton.Text = "Re-Connect";
+            ProfileList.LargeImageList = new ImageList { ImageSize = new Size(80, 106), ColorDepth = ColorDepth.Depth32Bit };
+            ProfileList.VirtualListSize = total;
+            label1.Text = total.ToString(CultureInfo.InvariantCulture);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -197,15 +166,13 @@ namespace MS.Katusha.Windows
 
         private Profile FindProfile(long id)
         {
-            if(_profiles.ContainsKey(id))
-                return _profiles[id];
-            return null;
+            return _service.GetProfile(id);
         }
         
         private void ProfileTabsSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ProfileList.SelectedItems.Count <= 0) return;
-            _profile = ProfileList.SelectedItems[0].Tag as Profile;
+            if (ProfileList.SelectedIndices.Count <= 0) return;
+            _profile = _profileListService.GetItemDataAt(ProfileList.SelectedIndices[0]);
             DisplayForProfileTab();
         }
 
@@ -236,7 +203,7 @@ namespace MS.Katusha.Windows
                     foreach(var item in list) {
                         var p = FindProfile(item.ProfileId);
                         if (p == null) continue;
-                        var image = _service.GetImage(p.ProfilePhotoGuid, comboBox7.SelectedItem as S3FS, PhotoType.Icon);
+                        var image = _service.GetImage(p.ProfilePhotoGuid, PhotoType.Icon);
                         var dialog = new WinDialog() {Image = image, Name = p.Name, ProfileId = item.ProfileId, Count = item.Count, LastReceived = item.LastReceivedDate, LastSent = item.LastSentDate, UnreadReceivedCount = item.UnreadReceivedCount, UnreadSentCount = item.UnreadSentCount};
                         dialogs.Add(dialog);
                     }
@@ -252,7 +219,6 @@ namespace MS.Katusha.Windows
                     SetPhotos(_profile);
                     break;
             }
-
         }
 
         private void SetPhotos(Profile profile)
@@ -261,7 +227,7 @@ namespace MS.Katusha.Windows
             foreach(var photo in profile.Photos) {
                 var row = new DataGridViewRow();
                 row.Height = 106;
-                var imageCell = new DataGridViewImageCell {Description = photo.FileName, Value = _service.GetImage(photo.Guid, comboBox7.SelectedItem as S3FS), };
+                var imageCell = new DataGridViewImageCell {Description = photo.FileName, Value = _service.GetImage(photo.Guid), };
                 var statusCell = new DataGridViewCheckBoxCell {Value = (photo.Status == (byte)PhotoStatus.Ready)};
                 row.Cells.Add(imageCell);
                 row.Cells.Add(statusCell);
@@ -276,7 +242,7 @@ namespace MS.Katusha.Windows
             var text = SearchTextBox.Text;
             var profiles = _service.GetProfiles(text, SearchComboBox.Text);
             ProfileList.Items.Clear();
-            ProcessList(profiles);
+            ProcessList(1);
             ConnectClick(null, null);
         }
 
@@ -300,7 +266,7 @@ namespace MS.Katusha.Windows
                 var name = item.FromName;
                 var id = item.FromId;
                 var guid = item.FromGuid;
-                var image = _service.GetImage(photoGuid, comboBox7.SelectedItem as S3FS, PhotoType.Icon);
+                var image = _service.GetImage(photoGuid, PhotoType.Icon);
                 var dialog = new { Guid = item.Guid, Image = image, Name = name, ProfileId = id, ProfileGuid = guid, Subject = item.Subject, Message = item.Message, ReadDate = item.ReadDate };
                 dialogs.Add(dialog);
             }
@@ -337,8 +303,8 @@ namespace MS.Katusha.Windows
 
         private void ProfileList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ProfileList.SelectedItems.Count <= 0) return;
-            _profile = ProfileList.SelectedItems[0].Tag as Profile;
+            if (ProfileList.SelectedIndices.Count <= 0) return;
+            _profile = _profileListService.GetItemDataAt(ProfileList.SelectedIndices[0]);
             if (_profile == null) return;
             DisplayForProfileTab();
             textBox4.Text = string.Format(@"{0}\ProfileBackups\{1}.json", KatushaFolder, _profile.User.UserName);
@@ -362,7 +328,7 @@ namespace MS.Katusha.Windows
                 if (column.Name == "Image") profileId = (long) row.Cells["ProfileId"].Value;
                 if (profileId > 0) {
                     _profile = FindProfile(profileId);
-                    ProfileList.SelectedItems.Clear();
+                    ProfileList.SelectedIndices.Clear();
                     foreach (ListViewItem item in ProfileList.Items) {
                         var p = item.Tag as Profile;
                         if (p == null || p.Id != profileId) continue;
@@ -382,9 +348,60 @@ namespace MS.Katusha.Windows
         {
             var photo = PhotoGridView.Rows[e.RowIndex].Tag as Photo;
             if (photo != null) {
-                var image = _service.GetImage(photo.Guid, comboBox7.SelectedItem as S3FS, PhotoType.Large);
+                var image = _service.GetImage(photo.Guid, PhotoType.Large);
                 PhotoBox.Image = image;
             }
+        }
+
+        private void ConnectClick(object sender, EventArgs e)
+        {
+            var serviceSettings = new MSKatushaServiceSettings
+            {
+                Username = textBox2.Text,
+                Password = textBox3.Text,
+                BaseUrl = comboBox1.Text,
+                DataFolder = Application.LocalUserAppDataPath,
+                S3Fs = comboBox7.SelectedItem as S3FS
+            };
+            _service = new MSKatushaService(serviceSettings);
+            _profileListService = new MSKatushaListService<Profile, ListViewItem>("Profile", serviceSettings);
+            ProfileList.LargeImageList = _profileListService.ImageList;
+            _profileListService.GetListEvent += ProfileListServiceOnGetListEvent;
+            _profileListService.GetItems();
+        }
+
+        private void ProfileListServiceOnGetListEvent(object sender, MSKatushaListManagerEventArgs<Profile> e)
+        {
+            textBox5.Text += "\r\n" + e.Message;
+            if (e.NewCount > 0)
+                MessageBox.Show(String.Format("Found {0} profiles to update.", e.NewCount), "FOUND UPDATES");
+            ProfileList.VirtualListSize = e.Total;
+            label1.Text = e.Total.ToString();
+        }
+
+        private void ProfileList_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            var item = _profileListService.GetItemAt(e.ItemIndex, OnNewViewItem);
+            if (item.Item.ImageList != null)
+                item.Item.ImageIndex = item.Item.ImageList.Images.IndexOfKey(item.Index.ToString());
+            e.Item = item.Item;
+        }
+
+        private ListViewItem OnNewViewItem(ImageList imageList, Profile p, int index)
+        {
+            var listViewItem = new ListViewItem
+                {
+                    Tag = p, Text = p.User.UserName + " / " + p.Name, ImageIndex = index, ToolTipText = p.User.Email
+                };
+            var image = _service.GetImage(p.ProfilePhotoGuid);
+            imageList.Images.Add(index.ToString(), image);
+            listViewItem.ImageKey = index.ToString();
+            return listViewItem;
+        }
+
+        private void ProfileList_SearchForVirtualItem(object sender, SearchForVirtualItemEventArgs e)
+        {
+
         }
 
     }
