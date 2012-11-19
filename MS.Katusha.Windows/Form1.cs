@@ -12,10 +12,13 @@ using MS.Katusha.SDK.Services;
 
 namespace MS.Katusha.Windows
 {
+    public delegate void SetControlPropertyCallback(Control control, string propertyName, object value);
     public partial class Form1 : Form
     {
         private MSKatushaService _service;
         private MSKatushaListService<Profile, ListViewItem> _profileListService;
+        private MSKatushaListService<Photo, ListViewItem> _photoListService;
+        private MSKatushaListService<Conversation, ListViewItem> _messageListService;
         private Profile _profile;
         private static readonly string KatushaFolder = GetDropboxFolder() + "\\MS.Katusha";
         private readonly ICrawler _crawler = new TravelGirlsCrawler();
@@ -152,16 +155,6 @@ namespace MS.Katusha.Windows
         {
             using(var file = new StreamWriter(textBox4.Text, false))
                 file.Write(textBox1.Text);
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            if (_profile != null && MessageBox.Show(String.Format("Delete {0}\r\nAre you sure?", _profile.Name), "Delete", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                var result = _service.DeleteProfile(_profile.Guid);
-                textBox5.Text += "\r\n" + _service.Result;
-                if (!String.IsNullOrWhiteSpace(result))
-                    MessageBox.Show(result);
-            }
         }
 
         private Profile FindProfile(long id)
@@ -353,6 +346,24 @@ namespace MS.Katusha.Windows
             }
         }
 
+        private void SetControlProperty(Control control, string propertyName, object value)
+        {
+            // InvokeRequired required compares the thread ID of the 
+            // calling thread to the thread ID of the creating thread. 
+            // If these threads are different, it returns true. 
+            if (control.InvokeRequired)
+            {
+                var d = new SetControlPropertyCallback(SetControlProperty);
+                this.Invoke(d, new object[] { control, propertyName, value });
+            }
+            else
+            {
+                var controlType = control.GetType();
+                var propertyInfo = controlType.GetProperty(propertyName);
+                propertyInfo.SetValue(control, value);
+            }
+        }
+
         private void ConnectClick(object sender, EventArgs e)
         {
             var serviceSettings = new MSKatushaServiceSettings
@@ -365,18 +376,63 @@ namespace MS.Katusha.Windows
             };
             _service = new MSKatushaService(serviceSettings);
             _profileListService = new MSKatushaListService<Profile, ListViewItem>("Profile", serviceSettings);
+            _photoListService = new MSKatushaListService<Photo, ListViewItem>("Photo", serviceSettings);
+            _messageListService = new MSKatushaListService<Conversation, ListViewItem>("Conversation", serviceSettings);
             ProfileList.LargeImageList = _profileListService.ImageList;
+            PhotoList.LargeImageList = _photoListService.ImageList;
             _profileListService.GetListEvent += ProfileListServiceOnGetListEvent;
-            _profileListService.GetItems();
+            _photoListService.GetListEvent += PhotoListServiceOnGetListEvent;
+            _messageListService.GetListEvent += MessageListServiceOnGetListEvent;
+            _profileListService.GetItems(1);
+            _photoListService.GetItems(1);
+            _messageListService.GetItems(1, 512);
+        }
+
+        private void PhotoListServiceOnGetListEvent(object sender, MSKatushaListManagerEventArgs<Photo> e)
+        {
+            //SetControlProperty(textBox5, "Text", textBox5.Text + "\r\n" + e.Uri);
+            if (e.ApiList.Items.Count > 0)
+                SetControlProperty(textBox5, "Text",
+                                            textBox5.Text +
+                                            String.Format("\r\nPhoto web request {1} / {2}. Found {0} items to update.", e.ApiList.Items.Count, e.ApiList.PageNo, (e.ApiList.Total / e.ApiList.PageSize)+ 1));
+            SetControlProperty(PhotoList, "VirtualListSize", e.TotalRaven);
+            SetControlProperty(label1, "Text", e.TotalRaven.ToString(CultureInfo.InvariantCulture));
+        }
+
+        private void PhotoList_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            var item = _photoListService.GetItemAt(e.ItemIndex, OnNewPhotoViewItem);
+            if (item.Item.ImageList != null)
+                item.Item.ImageIndex = item.Item.ImageList.Images.IndexOfKey(item.Index.ToString());
+            e.Item = item.Item;
+        }
+
+        private ListViewItem OnNewPhotoViewItem(ImageList imageList, Photo p, int index)
+        {
+            var profile = FindProfile(p.ProfileId);
+            var text = (profile != null) ? profile.User.UserName + " / " + profile.Name : p.FileName;
+            var listViewItem = new ListViewItem
+            {
+                Tag = p,
+                Text = text,
+                ImageIndex = index,
+                ToolTipText = p.FileName
+            };
+            var image = _service.GetImage(p.Guid);
+            imageList.Images.Add(index.ToString(CultureInfo.InvariantCulture), image);
+            listViewItem.ImageKey = index.ToString(CultureInfo.InvariantCulture);
+            return listViewItem;
         }
 
         private void ProfileListServiceOnGetListEvent(object sender, MSKatushaListManagerEventArgs<Profile> e)
         {
-            textBox5.Text += "\r\n" + e.Message;
-            if (e.NewCount > 0)
-                MessageBox.Show(String.Format("Found {0} profiles to update.", e.NewCount), "FOUND UPDATES");
-            ProfileList.VirtualListSize = e.Total;
-            label1.Text = e.Total.ToString();
+            //SetControlProperty(textBox5,"Text", textBox5.Text + "\r\n" + e.Uri);
+            if (e.ApiList.Items.Count > 0) 
+                SetControlProperty(textBox5, "Text",
+                                            textBox5.Text +
+                                            String.Format("\r\nProfile web request {1} / {2}. Found {0} items to update.", e.ApiList.Items.Count, e.ApiList.PageNo, (e.ApiList.Total / e.ApiList.PageSize)+ 1));
+            SetControlProperty(ProfileList, "VirtualListSize", e.TotalRaven);
+            SetControlProperty(label1, "Text", e.TotalRaven.ToString(CultureInfo.InvariantCulture));
         }
 
         private void ProfileList_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
@@ -399,11 +455,73 @@ namespace MS.Katusha.Windows
             return listViewItem;
         }
 
+        private void MessageListServiceOnGetListEvent(object sender, MSKatushaListManagerEventArgs<Conversation> e)
+        {
+            //SetControlProperty(textBox5, "Text", textBox5.Text + "\r\n" + e.Uri);
+            if (e.ApiList.Items.Count > 0)
+                SetControlProperty(textBox5, "Text",
+                                            textBox5.Text +
+                                            String.Format("\r\nMessage web request {1} / {2}. Found {0} items to update.", e.ApiList.Items.Count, e.ApiList.PageNo, (e.ApiList.Total / e.ApiList.PageSize) + 1));
+            SetControlProperty(MessageView, "VirtualListSize", e.TotalRaven);
+            SetControlProperty(label1, "Text", e.TotalRaven.ToString(CultureInfo.InvariantCulture));
+        }
+
+        private void MessageView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            var item = _messageListService.GetItemAt(e.ItemIndex, OnNewMessageViewItem);
+            e.Item = item.Item;
+        }
+
+        private ListViewItem OnNewMessageViewItem(ImageList imageList, Conversation p, int index)
+        {
+            p.From = p.From ?? FindProfile(p.FromId);
+            p.To = p.To ?? FindProfile(p.ToId);
+            var listViewItem = new ListViewItem {
+                Tag = p,
+                Text = p.CreationDate.ToString("u"),
+                ImageIndex = index,
+                ToolTipText = p.Subject
+            };
+           var isRead = (p.ReadDate > new DateTime(1900, 1, 1));
+           if(!isRead) listViewItem.Font = new Font(listViewItem.Font, FontStyle.Bold);
+            listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, (p.From != null) ? p.From.Name: p.FromId.ToString(CultureInfo.InvariantCulture)));
+            listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, (p.To != null) ? p.To.Name: p.ToId.ToString(CultureInfo.InvariantCulture)));
+            listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, p.Subject));
+            listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, p.Message));
+            listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, (isRead) ? p.ReadDate.ToString("u") : ""));
+            return listViewItem;
+        }
+
+        
         private void ProfileList_SearchForVirtualItem(object sender, SearchForVirtualItemEventArgs e)
         {
 
         }
 
+        private void MessageView_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && MessageBox.Show(String.Format("Delete {0}\r\nAre you sure?", _profile.Name), "Delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                foreach (int index in MessageView.SelectedIndices)
+                {
+                    _messageListService.Delete(index);
+                    MessageView.VirtualListSize--;
+                }
+            }
+        }
+
+        private void ProfileList_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && MessageBox.Show(String.Format("Delete {0}\r\nAre you sure?", _profile.Name), "Delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                foreach (int index in ProfileList.SelectedIndices)
+                {
+                    _profileListService.Delete(index);
+                    //ProfileList.RedrawItems(ProfileList.D)
+                    ProfileList.VirtualListSize--;
+                }
+            }
+        }
     }
 
 }

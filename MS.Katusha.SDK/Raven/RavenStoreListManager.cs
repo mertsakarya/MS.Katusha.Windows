@@ -3,20 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using MS.Katusha.Domain.Entities.BaseEntities;
 using Raven.Client;
-using Raven.Client.Embedded;
 using Raven.Client.Linq;
 
 namespace MS.Katusha.SDK.Raven
 {
-    public interface IRavenStoreListManager<T> where T : BaseGuidModel
-    {
-        DateTime GetLastUpdate();
-        List<T> GetItems(int start, int end);
-        int GetItemCount();
-        void AddItems(List<T> items);
-    }
-
-    public class RavenStoreListManager<T> : IRavenStoreListManager<T> where T : BaseGuidModel
+    public class RavenStoreListManager<T>  where T : BaseGuidModel
     {
         private readonly string _typeName;
         private readonly IDocumentStore _docStore;
@@ -31,9 +22,24 @@ namespace MS.Katusha.SDK.Raven
         {
             using (var session = _docStore.OpenSession())
             {
-                var lastUpdateObject = session.Load<LastUpdateObject>(_typeName);
-                if (lastUpdateObject == null) return new DateTime(1900, 1, 1);
-                return lastUpdateObject.LastUpdate;
+                var o =
+                    session.Query<T>()
+                           .Customize(x => x.WaitForNonStaleResults(TimeSpan.FromSeconds(30)))
+                           .OrderByDescending(p => p.ModifiedDate)
+                           .FirstOrDefault();
+
+                var maxDate = (o == null) ? DateTime.MinValue : o.ModifiedDate;
+                return maxDate;
+            }
+        }
+
+        public void SetLastUpdate(DateTime dateTime)
+        {
+            using (var session = _docStore.OpenSession())
+            {
+                var lastUpdateObject = new LastUpdateObject {Id = _typeName, LastUpdate = dateTime};
+                session.Store(lastUpdateObject);
+                session.SaveChanges();
             }
         }
 
@@ -63,12 +69,12 @@ namespace MS.Katusha.SDK.Raven
             using (var session = _docStore.OpenSession())
             {
                 RavenQueryStatistics stats;
-                session.Query<T>().Customize(x=> x.WaitForNonStaleResults(new TimeSpan(0,2,0))).Statistics(out stats).Take(0).ToArray();
+                var a = session.Query<T>().Customize(x=> x.WaitForNonStaleResults(new TimeSpan(0,2,0))).Statistics(out stats).Take(0).ToArray();
                 return stats.TotalResults;
             }
         }
 
-        public void AddItems(List<T> items)
+        public DateTime AddItems(IList<T> items)
         {
             var maxDate = new DateTime(1900, 1, 1);
             using (var session = _docStore.OpenSession())
@@ -81,6 +87,20 @@ namespace MS.Katusha.SDK.Raven
                 var luo = new LastUpdateObject() { Id = _typeName, LastUpdate = (DateTime)maxDate.AddSeconds(1) };
                 session.Store(luo);
                 session.SaveChanges();
+            }
+            return maxDate;
+        }
+
+        public void Delete(long id)
+        {
+            using (var session = _docStore.OpenSession())
+            {
+                var item = session.Query<T>().Where(p=> p.Id == id).SingleOrDefault();
+                if (item != null)
+                {
+                    session.Delete(item);
+                    session.SaveChanges();
+                }
             }
         }
     }

@@ -49,19 +49,19 @@ namespace MS.Katusha.Windows
             _listService.GetListEvent += ServiceOnGetListEvent;
             _conversationlistService.GetListEvent += ConversationServiceOnGetListEvent;
             _conversationlistService.GetItems(1, 1000);
-            _listService.GetItems();
+            _listService.GetItems(1);
         }
 
         private void ConversationServiceOnGetListEvent(object sender, MSKatushaListManagerEventArgs<Conversation> e)
         {
-            listBox1.DataSource = e.Items;
+            listBox1.DataSource = e.ApiList.Items;
         }
 
         private void ServiceOnGetListEvent(object sender, MSKatushaListManagerEventArgs<Photo> e)
         {
-            if (e.NewCount > 0)
-                MessageBox.Show(String.Format("Found {0} profiles to update.", e.NewCount), "FOUND UPDATES");
-            ProfileList.VirtualListSize = e.Total;
+            if (e.ApiList.Items.Count > 0)
+                MessageBox.Show(String.Format("Found {0} profiles to update.", e.ApiList.Items.Count), "FOUND UPDATES");
+            ProfileList.VirtualListSize = e.TotalRaven;
         }
 
         private void ProfileList_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)

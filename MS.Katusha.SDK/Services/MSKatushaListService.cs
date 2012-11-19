@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using MS.Katusha.Domain.Entities.BaseEntities;
+using MS.Katusha.Domain.Service;
 using MS.Katusha.SDK.Raven;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace MS.Katusha.SDK.Services
@@ -22,11 +25,11 @@ namespace MS.Katusha.SDK.Services
 
     public class MSKatushaListManagerEventArgs<T>
     {
-        public string Message { get; set; }
         public DateTime LastUpdateTime { get; set; }
-        public int Total { get; set; }
-        public int NewCount { get; set; }
-        public List<T> Items { get; set; }
+        public int TotalRaven { get; set; }
+        public ApiList<T> ApiList { get; set; }
+        public Uri Uri { get; set; }
+        public string Message { get; set; }
     }
 
     public class MSKatushaListService<T, TL> : BaseMSKatushaService where T : BaseGuidModel
@@ -49,46 +52,33 @@ namespace MS.Katusha.SDK.Services
 
         public ImageList ImageList { get { return _imageList; } }
 
-        public void GetItems()
+        public void GetItems(int page = 1, int pageSize = 128)
         {
             var lastUpdateTime = _ravenStoreListManager.GetLastUpdate();
-            var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
-            var request = new RestRequest("Api/Get" + _typeName + "sByTime/{key}", Method.GET) { RequestFormat = DataFormat.Json }
-                .AddUrlSegment("key", "1")
-                .AddParameter("date", lastUpdateTime.ToString("u"));
-            var response = client.Execute<List<T>>(request);
-            if (response.Data == null) { return; }
-            var items = response.Data;
-            if (items == null) { return; }
-            if (items.Count > 0)
-                _ravenStoreListManager.AddItems(items);
-            if (GetListEvent == null) return;
-            var total = _ravenStoreListManager.GetItemCount();
-            GetListEvent(this, new MSKatushaListManagerEventArgs<T> { LastUpdateTime = lastUpdateTime, NewCount = items.Count, Message = String.Format("curl -u username:password {0}", response.ResponseUri), Total = total });
+            GetItems(lastUpdateTime, page, pageSize );
         }
 
-        public void GetItems(int page,int pageSize = 128)
+        private void GetItems(DateTime lastUpdateTime, int page, int pageSize = 128)
         {
-            //var lastUpdateTime = _ravenStoreListManager.GetLastUpdate();
-            //var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
-            //var request = new RestRequest("Api/Get" + _typeName + "sByTime/{key}", Method.GET) { RequestFormat = DataFormat.Json }
-            //    .AddUrlSegment("key", page.ToString(CultureInfo.InvariantCulture))
-            //    .AddParameter("date", lastUpdateTime.ToString("u"))
-            //    .AddParameter("pageSize", 128);
-            //var response = client.Execute<List<T>>(request);
-            //if (response.Data == null) { return; }
-            //var items = response.Data;
-            //if (items == null) { return; }
-            //if (items.Count > 0)
-            //    _ravenStoreListManager.AddItems(items);
-            //if (GetListEvent == null) return;
-            //var total = _ravenStoreListManager.GetItemCount();
-            //GetListEvent(this, new MSKatushaListManagerEventArgs<T> { LastUpdateTime = lastUpdateTime, NewCount = items.Count, Message = String.Format("curl -u username:password {0}", response.ResponseUri), Total = total });
-            
-            int total;
-            var list = _ravenStoreListManager.GetItems(page, pageSize, out total);
+            var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
+            var request = new RestRequest("Api/Get" + _typeName + "sByTime/{key}", Method.GET) { RequestFormat = DataFormat.Json }
+                .AddUrlSegment("key", page.ToString(CultureInfo.InvariantCulture))
+                .AddParameter("date", lastUpdateTime.ToString("u"))
+                .AddParameter("pageSize", pageSize.ToString(CultureInfo.InvariantCulture));
+            client.ExecuteAsync(request, response => GetResponseAsync(response, lastUpdateTime) );
+        }
+
+        private void GetResponseAsync(IRestResponse response, DateTime lastUpdateTime)
+        {
+            var apiList = JsonConvert.DeserializeObject<ApiList<T>>(response.Content);
+            if (apiList == null) return;
+            if (apiList.Items.Count > 0)
+                _ravenStoreListManager.AddItems(apiList.Items);
             if (GetListEvent == null) return;
-            GetListEvent(this, new MSKatushaListManagerEventArgs<T> { Items = list, LastUpdateTime = DateTime.MinValue, NewCount = list.Count, Message = "", Total = total });
+            var total = _ravenStoreListManager.GetItemCount();
+            GetListEvent(this, new MSKatushaListManagerEventArgs<T> { LastUpdateTime = lastUpdateTime, TotalRaven = total, Uri = response.ResponseUri, ApiList = apiList });
+            if (apiList.Items.Count == apiList.PageSize)
+                GetItems(lastUpdateTime, apiList.PageNo + 1, apiList.PageSize);
         }
 
         public T GetItemDataAt(int index)
@@ -98,9 +88,22 @@ namespace MS.Katusha.SDK.Services
 
         public MSKatushaCachedListItem<T, TL> GetItemAt(int index, Func<ImageList, T, int, TL> newViewItem)
         {
+            if (newViewItem == null) return _dictionary[index];
             var msKatushaListItem = _dictionary.ContainsKey(index) ? _dictionary[index] : AddItem(index, newViewItem);
             msKatushaListItem.LastUpdate = DateTime.Now;
             return msKatushaListItem;
+        }
+
+        public string Delete(int index)
+        {
+            var data = GetItemDataAt(index);
+            var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
+            var request = new RestRequest("Api/Delete" + ((_typeName == "Conversation") ? "Message" : _typeName) + "/{guid}", Method.GET)
+                .AddUrlSegment("guid", data.Guid.ToString());
+            var response = client.Execute(request);
+            Result = String.Format("curl -u {0}:{1} {2}", Username, Password, response.ResponseUri);
+            _ravenStoreListManager.Delete(data.Id);
+            return response.Content;
         }
 
         private MSKatushaCachedListItem<T, TL> AddItem(int index, Func<ImageList, T, int, TL> getViewItem)
@@ -112,6 +115,7 @@ namespace MS.Katusha.SDK.Services
                 if (items.Count > 0)
                 {
                     var item = items[0];
+
                     var listViewItem = getViewItem(_imageList, item, index);
                     var cacheItem = new MSKatushaCachedListItem<T, TL> { Index = index, Item = listViewItem, Data = item };
                     _dictionary.Add(index, cacheItem);

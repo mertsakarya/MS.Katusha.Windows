@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using MS.Katusha.Domain.Entities;
+using MS.Katusha.Domain.Entities.BaseEntities;
 using MS.Katusha.Domain.Raven.Entities;
 using MS.Katusha.Enumerations;
 using MS.Katusha.SDK.Raven;
@@ -76,16 +77,6 @@ namespace MS.Katusha.SDK.Services
             return _ravenStore.GetProfiles(text, criteria);
         }
 
-        public string DeleteProfile(Guid guid)
-        {
-            var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
-            var request = new RestRequest("Api/DeleteProfile/{guid}", Method.GET)
-                .AddUrlSegment("guid", guid.ToString());
-            var response = client.Execute(request);
-            Result = String.Format("curl -u {0}:{1} {2}", Username, Password, response.ResponseUri);
-            return response.Content;
-        }
-
         public Guid GetProfileGuid(string key)
         {
             var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
@@ -139,9 +130,20 @@ namespace MS.Katusha.SDK.Services
             return response.Data;
         }
 
-        public string DeleteMessage(Guid guid) {
+        public string DeleteMessage(Guid guid)
+        {
             var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
             var request = new RestRequest("Api/DeleteMessage/{guid}", Method.GET)
+                .AddUrlSegment("guid", guid.ToString());
+            var response = client.Execute(request);
+            Result = String.Format("curl -u {0}:{1} {2}", Username, Password, response.ResponseUri);
+            return response.Content;
+        }
+
+        public string DeleteProfile(Guid guid)
+        {
+            var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
+            var request = new RestRequest("Api/DeleteProfile/{guid}", Method.GET)
                 .AddUrlSegment("guid", guid.ToString());
             var response = client.Execute(request);
             Result = String.Format("curl -u {0}:{1} {2}", Username, Password, response.ResponseUri);
@@ -170,7 +172,6 @@ namespace MS.Katusha.SDK.Services
             //folder.Delete(true);
             _ravenStore.DeleteAll();
         }
-
     }
 
 }

@@ -39,37 +39,6 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.ProfilesTab = new System.Windows.Forms.TabControl();
-            this.tabPage10 = new System.Windows.Forms.TabPage();
-            this.ProfileList = new System.Windows.Forms.ListView();
-            this.tabPage11 = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.SearchComboBox = new System.Windows.Forms.ComboBox();
-            this.SearchButton = new System.Windows.Forms.Button();
-            this.SearchTextBox = new System.Windows.Forms.TextBox();
-            this.ProfileTabs = new System.Windows.Forms.TabControl();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-            this.DialogsGridView = new System.Windows.Forms.DataGridView();
-            this.DialogGridView = new System.Windows.Forms.DataGridView();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
-            this.tabPage9 = new System.Windows.Forms.TabPage();
-            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.PhotoGridView = new System.Windows.Forms.DataGridView();
-            this.Image = new System.Windows.Forms.DataGridViewImageColumn();
-            this.Status = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.PhotoBox = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -92,17 +61,68 @@
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.button8 = new System.Windows.Forms.Button();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.ProfilesTab = new System.Windows.Forms.TabControl();
+            this.ProfilesTabPage = new System.Windows.Forms.TabPage();
+            this.PhotosTabPage = new System.Windows.Forms.TabPage();
+            this.PhotoList = new System.Windows.Forms.ListView();
+            this.MessagesTabPage = new System.Windows.Forms.TabPage();
+            this.MessageView = new System.Windows.Forms.ListView();
+            this.DateColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.FromColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ToColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.SubjectColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.MessageColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ReadDateColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.SearchComboBox = new System.Windows.Forms.ComboBox();
+            this.SearchButton = new System.Windows.Forms.Button();
+            this.SearchTextBox = new System.Windows.Forms.TextBox();
+            this.ProfileList = new System.Windows.Forms.ListView();
+            this.ProfileTabs = new System.Windows.Forms.TabControl();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.DialogsGridView = new System.Windows.Forms.DataGridView();
+            this.DialogGridView = new System.Windows.Forms.DataGridView();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.PhotoGridView = new System.Windows.Forms.DataGridView();
+            this.Image = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Status = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.PhotoBox = new System.Windows.Forms.PictureBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.tabControl2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.ProfilesTab.SuspendLayout();
+            this.ProfilesTabPage.SuspendLayout();
+            this.PhotosTabPage.SuspendLayout();
+            this.MessagesTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.ProfilesTab.SuspendLayout();
-            this.tabPage10.SuspendLayout();
-            this.tabPage11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.panel4.SuspendLayout();
             this.ProfileTabs.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
@@ -121,14 +141,6 @@
             this.splitContainer4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PhotoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhotoBox)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            this.tabControl2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -165,8 +177,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.panel5);
             this.tabPage1.Controls.Add(this.panel1);
-            this.tabPage1.Controls.Add(this.splitContainer1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Size = new System.Drawing.Size(1023, 607);
@@ -256,371 +268,6 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(261, 21);
             this.comboBox1.TabIndex = 9;
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(3, 36);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.ProfilesTab);
-            this.splitContainer1.Panel1.Controls.Add(this.SearchComboBox);
-            this.splitContainer1.Panel1.Controls.Add(this.SearchButton);
-            this.splitContainer1.Panel1.Controls.Add(this.SearchTextBox);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.ProfileTabs);
-            this.splitContainer1.Size = new System.Drawing.Size(1015, 575);
-            this.splitContainer1.SplitterDistance = 301;
-            this.splitContainer1.TabIndex = 16;
-            // 
-            // ProfilesTab
-            // 
-            this.ProfilesTab.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ProfilesTab.Controls.Add(this.tabPage10);
-            this.ProfilesTab.Controls.Add(this.tabPage11);
-            this.ProfilesTab.Location = new System.Drawing.Point(3, 35);
-            this.ProfilesTab.Name = "ProfilesTab";
-            this.ProfilesTab.SelectedIndex = 0;
-            this.ProfilesTab.Size = new System.Drawing.Size(295, 533);
-            this.ProfilesTab.TabIndex = 18;
-            // 
-            // tabPage10
-            // 
-            this.tabPage10.Controls.Add(this.ProfileList);
-            this.tabPage10.Location = new System.Drawing.Point(4, 22);
-            this.tabPage10.Name = "tabPage10";
-            this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage10.Size = new System.Drawing.Size(287, 507);
-            this.tabPage10.TabIndex = 0;
-            this.tabPage10.Text = "ListView";
-            this.tabPage10.UseVisualStyleBackColor = true;
-            // 
-            // ProfileList
-            // 
-            this.ProfileList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ProfileList.Location = new System.Drawing.Point(3, 3);
-            this.ProfileList.Name = "ProfileList";
-            this.ProfileList.Size = new System.Drawing.Size(281, 501);
-            this.ProfileList.TabIndex = 13;
-            this.ProfileList.UseCompatibleStateImageBehavior = false;
-            this.ProfileList.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.ProfileList_RetrieveVirtualItem);
-            this.ProfileList.SearchForVirtualItem += new System.Windows.Forms.SearchForVirtualItemEventHandler(this.ProfileList_SearchForVirtualItem);
-            this.ProfileList.SelectedIndexChanged += new System.EventHandler(this.ProfileList_SelectedIndexChanged);
-            // 
-            // tabPage11
-            // 
-            this.tabPage11.Controls.Add(this.dataGridView1);
-            this.tabPage11.Location = new System.Drawing.Point(4, 22);
-            this.tabPage11.Name = "tabPage11";
-            this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage11.Size = new System.Drawing.Size(287, 511);
-            this.tabPage11.TabIndex = 1;
-            this.tabPage11.Text = "GridView";
-            this.tabPage11.UseVisualStyleBackColor = true;
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(281, 505);
-            this.dataGridView1.TabIndex = 18;
-            // 
-            // SearchComboBox
-            // 
-            this.SearchComboBox.FormattingEnabled = true;
-            this.SearchComboBox.Items.AddRange(new object[] {
-            "Text",
-            "Id"});
-            this.SearchComboBox.Location = new System.Drawing.Point(163, 6);
-            this.SearchComboBox.Name = "SearchComboBox";
-            this.SearchComboBox.Size = new System.Drawing.Size(63, 21);
-            this.SearchComboBox.TabIndex = 16;
-            this.SearchComboBox.Text = "Text";
-            // 
-            // SearchButton
-            // 
-            this.SearchButton.Location = new System.Drawing.Point(231, 6);
-            this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(59, 23);
-            this.SearchButton.TabIndex = 15;
-            this.SearchButton.Text = "Search";
-            this.SearchButton.UseVisualStyleBackColor = true;
-            this.SearchButton.Click += new System.EventHandler(this.SearchButtonClick);
-            // 
-            // SearchTextBox
-            // 
-            this.SearchTextBox.Location = new System.Drawing.Point(7, 7);
-            this.SearchTextBox.Name = "SearchTextBox";
-            this.SearchTextBox.Size = new System.Drawing.Size(148, 20);
-            this.SearchTextBox.TabIndex = 14;
-            // 
-            // ProfileTabs
-            // 
-            this.ProfileTabs.Controls.Add(this.tabPage5);
-            this.ProfileTabs.Controls.Add(this.tabPage6);
-            this.ProfileTabs.Controls.Add(this.tabPage7);
-            this.ProfileTabs.Controls.Add(this.tabPage8);
-            this.ProfileTabs.Controls.Add(this.tabPage9);
-            this.ProfileTabs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ProfileTabs.Location = new System.Drawing.Point(0, 0);
-            this.ProfileTabs.Name = "ProfileTabs";
-            this.ProfileTabs.SelectedIndex = 0;
-            this.ProfileTabs.Size = new System.Drawing.Size(710, 575);
-            this.ProfileTabs.TabIndex = 14;
-            this.ProfileTabs.SelectedIndexChanged += new System.EventHandler(this.ProfileTabsSelectedIndexChanged);
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.webBrowser1);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(702, 549);
-            this.tabPage5.TabIndex = 0;
-            this.tabPage5.Text = "WEB";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // webBrowser1
-            // 
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScriptErrorsSuppressed = true;
-            this.webBrowser1.Size = new System.Drawing.Size(702, 546);
-            this.webBrowser1.TabIndex = 0;
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Controls.Add(this.panel2);
-            this.tabPage6.Controls.Add(this.textBox1);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(702, 549);
-            this.tabPage6.TabIndex = 1;
-            this.tabPage6.Text = "JSON";
-            this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.button5);
-            this.panel2.Controls.Add(this.button4);
-            this.panel2.Controls.Add(this.textBox4);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(3, 511);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(696, 35);
-            this.panel2.TabIndex = 16;
-            // 
-            // button5
-            // 
-            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button5.Location = new System.Drawing.Point(618, 6);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 18;
-            this.button5.Text = "Delete";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // button4
-            // 
-            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(332, 5);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 17;
-            this.button4.Text = "Save";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // textBox4
-            // 
-            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox4.Location = new System.Drawing.Point(7, 8);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(319, 20);
-            this.textBox4.TabIndex = 16;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.textBox1.Location = new System.Drawing.Point(3, 3);
-            this.textBox1.MaxLength = 32767000;
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(696, 502);
-            this.textBox1.TabIndex = 15;
-            this.textBox1.WordWrap = false;
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Controls.Add(this.splitContainer3);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(702, 549);
-            this.tabPage7.TabIndex = 2;
-            this.tabPage7.Text = "Messages";
-            this.tabPage7.UseVisualStyleBackColor = true;
-            // 
-            // splitContainer3
-            // 
-            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer3.Name = "splitContainer3";
-            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer3.Panel1
-            // 
-            this.splitContainer3.Panel1.Controls.Add(this.DialogsGridView);
-            // 
-            // splitContainer3.Panel2
-            // 
-            this.splitContainer3.Panel2.Controls.Add(this.DialogGridView);
-            this.splitContainer3.Size = new System.Drawing.Size(702, 549);
-            this.splitContainer3.SplitterDistance = 272;
-            this.splitContainer3.TabIndex = 1;
-            // 
-            // DialogsGridView
-            // 
-            this.DialogsGridView.AllowUserToAddRows = false;
-            this.DialogsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DialogsGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DialogsGridView.Location = new System.Drawing.Point(0, 0);
-            this.DialogsGridView.Name = "DialogsGridView";
-            this.DialogsGridView.RowTemplate.Height = 53;
-            this.DialogsGridView.Size = new System.Drawing.Size(702, 272);
-            this.DialogsGridView.TabIndex = 1;
-            this.DialogsGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogsGridView_CellClick);
-            this.DialogsGridView.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogsGridView_RowEnter);
-            this.DialogsGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DialogsGridView_UserDeletingRow);
-            // 
-            // DialogGridView
-            // 
-            this.DialogGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DialogGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DialogGridView.Location = new System.Drawing.Point(0, 0);
-            this.DialogGridView.Name = "DialogGridView";
-            this.DialogGridView.RowTemplate.Height = 53;
-            this.DialogGridView.Size = new System.Drawing.Size(702, 273);
-            this.DialogGridView.TabIndex = 0;
-            this.DialogGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogGridView_CellClick);
-            this.DialogGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DialogGridView_UserDeletingRow);
-            // 
-            // tabPage8
-            // 
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Size = new System.Drawing.Size(702, 549);
-            this.tabPage8.TabIndex = 3;
-            this.tabPage8.Text = "Views";
-            this.tabPage8.UseVisualStyleBackColor = true;
-            // 
-            // tabPage9
-            // 
-            this.tabPage9.Controls.Add(this.splitContainer4);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
-            this.tabPage9.Name = "tabPage9";
-            this.tabPage9.Size = new System.Drawing.Size(702, 549);
-            this.tabPage9.TabIndex = 4;
-            this.tabPage9.Text = "Photos";
-            this.tabPage9.UseVisualStyleBackColor = true;
-            // 
-            // splitContainer4
-            // 
-            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer4.Name = "splitContainer4";
-            // 
-            // splitContainer4.Panel1
-            // 
-            this.splitContainer4.Panel1.Controls.Add(this.PhotoGridView);
-            // 
-            // splitContainer4.Panel2
-            // 
-            this.splitContainer4.Panel2.Controls.Add(this.panel3);
-            this.splitContainer4.Panel2.Controls.Add(this.PhotoBox);
-            this.splitContainer4.Size = new System.Drawing.Size(702, 549);
-            this.splitContainer4.SplitterDistance = 234;
-            this.splitContainer4.TabIndex = 0;
-            // 
-            // PhotoGridView
-            // 
-            this.PhotoGridView.AllowUserToAddRows = false;
-            this.PhotoGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.PhotoGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Image,
-            this.Status,
-            this.Guid});
-            this.PhotoGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PhotoGridView.Location = new System.Drawing.Point(0, 0);
-            this.PhotoGridView.Name = "PhotoGridView";
-            this.PhotoGridView.RowTemplate.Height = 106;
-            this.PhotoGridView.Size = new System.Drawing.Size(234, 549);
-            this.PhotoGridView.TabIndex = 0;
-            this.PhotoGridView.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.PhotoGridView_RowEnter);
-            // 
-            // Image
-            // 
-            this.Image.FillWeight = 80F;
-            this.Image.Frozen = true;
-            this.Image.HeaderText = "Image";
-            this.Image.MinimumWidth = 80;
-            this.Image.Name = "Image";
-            this.Image.ReadOnly = true;
-            this.Image.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Image.Width = 80;
-            // 
-            // Status
-            // 
-            this.Status.HeaderText = "Status";
-            this.Status.Name = "Status";
-            // 
-            // Guid
-            // 
-            this.Guid.HeaderText = "Guid";
-            this.Guid.Name = "Guid";
-            this.Guid.ReadOnly = true;
-            this.Guid.Visible = false;
-            // 
-            // panel3
-            // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.Location = new System.Drawing.Point(5, 506);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(456, 40);
-            this.panel3.TabIndex = 1;
-            // 
-            // PhotoBox
-            // 
-            this.PhotoBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.PhotoBox.Location = new System.Drawing.Point(5, 3);
-            this.PhotoBox.Name = "PhotoBox";
-            this.PhotoBox.Size = new System.Drawing.Size(444, 478);
-            this.PhotoBox.TabIndex = 0;
-            this.PhotoBox.TabStop = false;
             // 
             // tabPage2
             // 
@@ -869,6 +516,449 @@
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
+            // panel5
+            // 
+            this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel5.Controls.Add(this.ProfilesTab);
+            this.panel5.Location = new System.Drawing.Point(3, 36);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(1020, 575);
+            this.panel5.TabIndex = 18;
+            // 
+            // ProfilesTab
+            // 
+            this.ProfilesTab.Controls.Add(this.ProfilesTabPage);
+            this.ProfilesTab.Controls.Add(this.PhotosTabPage);
+            this.ProfilesTab.Controls.Add(this.MessagesTabPage);
+            this.ProfilesTab.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ProfilesTab.Location = new System.Drawing.Point(0, 0);
+            this.ProfilesTab.Name = "ProfilesTab";
+            this.ProfilesTab.SelectedIndex = 0;
+            this.ProfilesTab.Size = new System.Drawing.Size(1020, 575);
+            this.ProfilesTab.TabIndex = 19;
+            this.ProfilesTab.SelectedIndexChanged += new System.EventHandler(this.ProfileTabsSelectedIndexChanged);
+            // 
+            // ProfilesTabPage
+            // 
+            this.ProfilesTabPage.Controls.Add(this.splitContainer1);
+            this.ProfilesTabPage.Location = new System.Drawing.Point(4, 22);
+            this.ProfilesTabPage.Name = "ProfilesTabPage";
+            this.ProfilesTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.ProfilesTabPage.Size = new System.Drawing.Size(1012, 549);
+            this.ProfilesTabPage.TabIndex = 0;
+            this.ProfilesTabPage.Text = "Profiles";
+            this.ProfilesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // PhotosTabPage
+            // 
+            this.PhotosTabPage.Controls.Add(this.PhotoList);
+            this.PhotosTabPage.Location = new System.Drawing.Point(4, 22);
+            this.PhotosTabPage.Name = "PhotosTabPage";
+            this.PhotosTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.PhotosTabPage.Size = new System.Drawing.Size(1012, 549);
+            this.PhotosTabPage.TabIndex = 1;
+            this.PhotosTabPage.Text = "Photos";
+            this.PhotosTabPage.UseVisualStyleBackColor = true;
+            // 
+            // PhotoList
+            // 
+            this.PhotoList.CheckBoxes = true;
+            this.PhotoList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PhotoList.Location = new System.Drawing.Point(3, 3);
+            this.PhotoList.Name = "PhotoList";
+            this.PhotoList.Size = new System.Drawing.Size(1006, 543);
+            this.PhotoList.TabIndex = 14;
+            this.PhotoList.UseCompatibleStateImageBehavior = false;
+            this.PhotoList.VirtualMode = true;
+            this.PhotoList.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.PhotoList_RetrieveVirtualItem);
+            // 
+            // MessagesTabPage
+            // 
+            this.MessagesTabPage.Controls.Add(this.MessageView);
+            this.MessagesTabPage.Location = new System.Drawing.Point(4, 22);
+            this.MessagesTabPage.Name = "MessagesTabPage";
+            this.MessagesTabPage.Size = new System.Drawing.Size(1012, 549);
+            this.MessagesTabPage.TabIndex = 2;
+            this.MessagesTabPage.Text = "Messages";
+            this.MessagesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // MessageView
+            // 
+            this.MessageView.AllowColumnReorder = true;
+            this.MessageView.CheckBoxes = true;
+            this.MessageView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.DateColumn,
+            this.FromColumn,
+            this.ToColumn,
+            this.SubjectColumn,
+            this.MessageColumn,
+            this.ReadDateColumn});
+            this.MessageView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MessageView.FullRowSelect = true;
+            this.MessageView.GridLines = true;
+            this.MessageView.Location = new System.Drawing.Point(0, 0);
+            this.MessageView.Name = "MessageView";
+            this.MessageView.Size = new System.Drawing.Size(1012, 549);
+            this.MessageView.Sorting = System.Windows.Forms.SortOrder.Descending;
+            this.MessageView.TabIndex = 15;
+            this.MessageView.UseCompatibleStateImageBehavior = false;
+            this.MessageView.View = System.Windows.Forms.View.Details;
+            this.MessageView.VirtualMode = true;
+            this.MessageView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.MessageView_RetrieveVirtualItem);
+            this.MessageView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MessageView_KeyUp);
+            // 
+            // DateColumn
+            // 
+            this.DateColumn.Text = "Date";
+            this.DateColumn.Width = 141;
+            // 
+            // FromColumn
+            // 
+            this.FromColumn.DisplayIndex = 0;
+            this.FromColumn.Text = "From";
+            // 
+            // ToColumn
+            // 
+            this.ToColumn.DisplayIndex = 1;
+            this.ToColumn.Text = "To";
+            // 
+            // SubjectColumn
+            // 
+            this.SubjectColumn.Text = "Subject";
+            // 
+            // MessageColumn
+            // 
+            this.MessageColumn.Text = "Message";
+            // 
+            // ReadDateColumn
+            // 
+            this.ReadDateColumn.Text = "ReadDate";
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.panel4);
+            this.splitContainer1.Panel1.Controls.Add(this.ProfileList);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.ProfileTabs);
+            this.splitContainer1.Size = new System.Drawing.Size(1006, 543);
+            this.splitContainer1.SplitterDistance = 455;
+            this.splitContainer1.TabIndex = 20;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.SearchComboBox);
+            this.panel4.Controls.Add(this.SearchButton);
+            this.panel4.Controls.Add(this.SearchTextBox);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(455, 29);
+            this.panel4.TabIndex = 15;
+            // 
+            // SearchComboBox
+            // 
+            this.SearchComboBox.FormattingEnabled = true;
+            this.SearchComboBox.Items.AddRange(new object[] {
+            "Text",
+            "Id"});
+            this.SearchComboBox.Location = new System.Drawing.Point(155, 4);
+            this.SearchComboBox.Name = "SearchComboBox";
+            this.SearchComboBox.Size = new System.Drawing.Size(63, 21);
+            this.SearchComboBox.TabIndex = 19;
+            this.SearchComboBox.Text = "Text";
+            // 
+            // SearchButton
+            // 
+            this.SearchButton.Location = new System.Drawing.Point(223, 2);
+            this.SearchButton.Name = "SearchButton";
+            this.SearchButton.Size = new System.Drawing.Size(55, 23);
+            this.SearchButton.TabIndex = 18;
+            this.SearchButton.Text = "Search";
+            this.SearchButton.UseVisualStyleBackColor = true;
+            this.SearchButton.Click += new System.EventHandler(this.SearchButtonClick);
+            // 
+            // SearchTextBox
+            // 
+            this.SearchTextBox.Location = new System.Drawing.Point(3, 4);
+            this.SearchTextBox.Name = "SearchTextBox";
+            this.SearchTextBox.Size = new System.Drawing.Size(146, 20);
+            this.SearchTextBox.TabIndex = 17;
+            // 
+            // ProfileList
+            // 
+            this.ProfileList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProfileList.Location = new System.Drawing.Point(0, 31);
+            this.ProfileList.Name = "ProfileList";
+            this.ProfileList.Size = new System.Drawing.Size(455, 512);
+            this.ProfileList.TabIndex = 14;
+            this.ProfileList.UseCompatibleStateImageBehavior = false;
+            this.ProfileList.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.ProfileList_RetrieveVirtualItem);
+            this.ProfileList.SearchForVirtualItem += new System.Windows.Forms.SearchForVirtualItemEventHandler(this.ProfileList_SearchForVirtualItem);
+            this.ProfileList.SelectedIndexChanged += new System.EventHandler(this.ProfileList_SelectedIndexChanged);
+            this.ProfileList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ProfileList_KeyUp);
+            // 
+            // ProfileTabs
+            // 
+            this.ProfileTabs.Controls.Add(this.tabPage5);
+            this.ProfileTabs.Controls.Add(this.tabPage6);
+            this.ProfileTabs.Controls.Add(this.tabPage7);
+            this.ProfileTabs.Controls.Add(this.tabPage8);
+            this.ProfileTabs.Controls.Add(this.tabPage9);
+            this.ProfileTabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ProfileTabs.Location = new System.Drawing.Point(0, 0);
+            this.ProfileTabs.Name = "ProfileTabs";
+            this.ProfileTabs.SelectedIndex = 0;
+            this.ProfileTabs.Size = new System.Drawing.Size(547, 543);
+            this.ProfileTabs.TabIndex = 14;
+            this.ProfileTabs.SelectedIndexChanged += new System.EventHandler(this.ProfileTabsSelectedIndexChanged);
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.webBrowser1);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(539, 517);
+            this.tabPage5.TabIndex = 0;
+            this.tabPage5.Text = "WEB";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // webBrowser1
+            // 
+            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowser1.Location = new System.Drawing.Point(3, 3);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.ScriptErrorsSuppressed = true;
+            this.webBrowser1.Size = new System.Drawing.Size(533, 511);
+            this.webBrowser1.TabIndex = 0;
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Controls.Add(this.panel2);
+            this.tabPage6.Controls.Add(this.textBox1);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage6.Size = new System.Drawing.Size(539, 517);
+            this.tabPage6.TabIndex = 1;
+            this.tabPage6.Text = "JSON";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.button5);
+            this.panel2.Controls.Add(this.button4);
+            this.panel2.Controls.Add(this.textBox4);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(3, 479);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(533, 35);
+            this.panel2.TabIndex = 16;
+            // 
+            // button5
+            // 
+            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button5.Location = new System.Drawing.Point(256, 6);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 18;
+            this.button5.Text = "Delete";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.Location = new System.Drawing.Point(-30, 5);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 17;
+            this.button4.Text = "Save";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
+            // textBox4
+            // 
+            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox4.Location = new System.Drawing.Point(7, 8);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(0, 20);
+            this.textBox4.TabIndex = 16;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.textBox1.Location = new System.Drawing.Point(3, 3);
+            this.textBox1.MaxLength = 32767000;
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox1.Size = new System.Drawing.Size(533, 511);
+            this.textBox1.TabIndex = 15;
+            this.textBox1.WordWrap = false;
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.splitContainer3);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(539, 517);
+            this.tabPage7.TabIndex = 2;
+            this.tabPage7.Text = "Messages";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer3
+            // 
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.DialogsGridView);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.DialogGridView);
+            this.splitContainer3.Size = new System.Drawing.Size(539, 517);
+            this.splitContainer3.SplitterDistance = 254;
+            this.splitContainer3.TabIndex = 1;
+            // 
+            // DialogsGridView
+            // 
+            this.DialogsGridView.AllowUserToAddRows = false;
+            this.DialogsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DialogsGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DialogsGridView.Location = new System.Drawing.Point(0, 0);
+            this.DialogsGridView.Name = "DialogsGridView";
+            this.DialogsGridView.RowTemplate.Height = 53;
+            this.DialogsGridView.Size = new System.Drawing.Size(539, 254);
+            this.DialogsGridView.TabIndex = 1;
+            this.DialogsGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogsGridView_CellClick);
+            this.DialogsGridView.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogsGridView_RowEnter);
+            this.DialogsGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DialogsGridView_UserDeletingRow);
+            // 
+            // DialogGridView
+            // 
+            this.DialogGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DialogGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DialogGridView.Location = new System.Drawing.Point(0, 0);
+            this.DialogGridView.Name = "DialogGridView";
+            this.DialogGridView.RowTemplate.Height = 53;
+            this.DialogGridView.Size = new System.Drawing.Size(539, 259);
+            this.DialogGridView.TabIndex = 0;
+            this.DialogGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DialogGridView_CellClick);
+            this.DialogGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DialogGridView_UserDeletingRow);
+            // 
+            // tabPage8
+            // 
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Size = new System.Drawing.Size(539, 517);
+            this.tabPage8.TabIndex = 3;
+            this.tabPage8.Text = "Views";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // tabPage9
+            // 
+            this.tabPage9.Controls.Add(this.splitContainer4);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Size = new System.Drawing.Size(539, 517);
+            this.tabPage9.TabIndex = 4;
+            this.tabPage9.Text = "Photos";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer4
+            // 
+            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer4.Name = "splitContainer4";
+            // 
+            // splitContainer4.Panel1
+            // 
+            this.splitContainer4.Panel1.Controls.Add(this.PhotoGridView);
+            // 
+            // splitContainer4.Panel2
+            // 
+            this.splitContainer4.Panel2.Controls.Add(this.panel3);
+            this.splitContainer4.Panel2.Controls.Add(this.PhotoBox);
+            this.splitContainer4.Size = new System.Drawing.Size(539, 517);
+            this.splitContainer4.SplitterDistance = 179;
+            this.splitContainer4.TabIndex = 0;
+            // 
+            // PhotoGridView
+            // 
+            this.PhotoGridView.AllowUserToAddRows = false;
+            this.PhotoGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.PhotoGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Image,
+            this.Status,
+            this.Guid});
+            this.PhotoGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PhotoGridView.Location = new System.Drawing.Point(0, 0);
+            this.PhotoGridView.Name = "PhotoGridView";
+            this.PhotoGridView.RowTemplate.Height = 106;
+            this.PhotoGridView.Size = new System.Drawing.Size(179, 517);
+            this.PhotoGridView.TabIndex = 0;
+            this.PhotoGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.PhotoGridView_RowEnter);
+            // 
+            // Image
+            // 
+            this.Image.FillWeight = 80F;
+            this.Image.Frozen = true;
+            this.Image.HeaderText = "Image";
+            this.Image.MinimumWidth = 80;
+            this.Image.Name = "Image";
+            this.Image.ReadOnly = true;
+            this.Image.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Image.Width = 80;
+            // 
+            // Status
+            // 
+            this.Status.HeaderText = "Status";
+            this.Status.Name = "Status";
+            // 
+            // Guid
+            // 
+            this.Guid.HeaderText = "Guid";
+            this.Guid.Name = "Guid";
+            this.Guid.ReadOnly = true;
+            this.Guid.Visible = false;
+            // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.Location = new System.Drawing.Point(5, 487);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(348, 27);
+            this.panel3.TabIndex = 1;
+            // 
+            // PhotoBox
+            // 
+            this.PhotoBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.PhotoBox.Location = new System.Drawing.Point(0, 0);
+            this.PhotoBox.Name = "PhotoBox";
+            this.PhotoBox.Size = new System.Drawing.Size(356, 481);
+            this.PhotoBox.TabIndex = 0;
+            this.PhotoBox.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -883,15 +973,27 @@
             this.tabPage1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabControl2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.ProfilesTab.ResumeLayout(false);
+            this.ProfilesTabPage.ResumeLayout(false);
+            this.PhotosTabPage.ResumeLayout(false);
+            this.MessagesTabPage.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.ProfilesTab.ResumeLayout(false);
-            this.tabPage10.ResumeLayout(false);
-            this.tabPage11.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ProfileTabs.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
@@ -912,16 +1014,6 @@
             this.splitContainer4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PhotoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhotoBox)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            this.tabControl2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -933,7 +1025,6 @@
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button ConnectButton;
@@ -961,39 +1052,50 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ComboBox comboBox7;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.TabControl ProfilesTab;
+        private System.Windows.Forms.TabPage ProfilesTabPage;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.ComboBox SearchComboBox;
+        private System.Windows.Forms.Button SearchButton;
+        private System.Windows.Forms.TextBox SearchTextBox;
+        private System.Windows.Forms.ListView ProfileList;
         private System.Windows.Forms.TabControl ProfileTabs;
-        private System.Windows.Forms.TabPage tabPage6;
-        private System.Windows.Forms.TabPage tabPage7;
-        private System.Windows.Forms.TabPage tabPage8;
-        private System.Windows.Forms.TabPage tabPage9;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.ComboBox comboBox7;
-        private System.Windows.Forms.TextBox SearchTextBox;
-        private System.Windows.Forms.Button SearchButton;
-        private System.Windows.Forms.SplitContainer splitContainer3;
-        private System.Windows.Forms.DataGridView DialogsGridView;
-        private System.Windows.Forms.DataGridView DialogGridView;
-        private System.Windows.Forms.ComboBox SearchComboBox;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.TabControl ProfilesTab;
-        private System.Windows.Forms.TabPage tabPage10;
-        private System.Windows.Forms.ListView ProfileList;
-        private System.Windows.Forms.TabPage tabPage11;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.DataGridView DialogsGridView;
+        private System.Windows.Forms.DataGridView DialogGridView;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TabPage tabPage9;
         private System.Windows.Forms.SplitContainer splitContainer4;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.PictureBox PhotoBox;
         private System.Windows.Forms.DataGridView PhotoGridView;
         private System.Windows.Forms.DataGridViewImageColumn Image;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Status;
         private System.Windows.Forms.DataGridViewTextBoxColumn Guid;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.PictureBox PhotoBox;
+        private System.Windows.Forms.TabPage PhotosTabPage;
+        private System.Windows.Forms.ListView PhotoList;
+        private System.Windows.Forms.TabPage MessagesTabPage;
+        private System.Windows.Forms.ListView MessageView;
+        private System.Windows.Forms.ColumnHeader DateColumn;
+        private System.Windows.Forms.ColumnHeader FromColumn;
+        private System.Windows.Forms.ColumnHeader ToColumn;
+        private System.Windows.Forms.ColumnHeader SubjectColumn;
+        private System.Windows.Forms.ColumnHeader MessageColumn;
+        private System.Windows.Forms.ColumnHeader ReadDateColumn;
     }
 }
 

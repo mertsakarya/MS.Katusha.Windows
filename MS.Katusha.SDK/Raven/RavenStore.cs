@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MS.Katusha.Domain.Entities;
+using MS.Katusha.Domain.Entities.BaseEntities;
 using Raven.Client;
 using Raven.Client.Linq;
 
@@ -49,7 +50,7 @@ namespace MS.Katusha.SDK.Raven
         public Profile GetProfile(long id)
         {
             using (var session = _docStore.OpenSession()) {
-                return session.Query<Profile>().FirstOrDefault(p => p.Id == id);
+                return session.Load<Profile>(id);
             }
         }
 
@@ -118,6 +119,19 @@ namespace MS.Katusha.SDK.Raven
         {
             Clear<Profile>();
             Clear<LastUpdateObject>();
+        }
+
+        public void Delete<T>(Guid guid) where T:BaseGuidModel
+        {
+            using (var session = _docStore.OpenSession())
+            {
+                var item = session.Query<T>().Where(p=> p.Guid == guid).FirstOrDefault();
+                if(item != null)
+                {
+                    session.Delete(item);
+                }
+                session.SaveChanges();
+            }
         }
     }
 }
