@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MS.Katusha.Domain.Entities;
 using MS.Katusha.Domain.Entities.BaseEntities;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -95,12 +96,21 @@ namespace MS.Katusha.SDK.Raven
         {
             using (var session = _docStore.OpenSession())
             {
-                var item = session.Query<T>().Where(p=> p.Id == id).SingleOrDefault();
+                var item = session.Query<T>().SingleOrDefault(p => p.Id == id);
                 if (item != null)
                 {
                     session.Delete(item);
                     session.SaveChanges();
                 }
+            }
+        }
+
+        public void Update(Photo data)
+        {
+            using (var session = _docStore.OpenSession())
+            {
+                session.Store(data);
+                session.SaveChanges();
             }
         }
     }

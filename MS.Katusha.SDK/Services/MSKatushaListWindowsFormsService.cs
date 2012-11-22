@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using MS.Katusha.Domain.Entities;
 using MS.Katusha.Domain.Entities.BaseEntities;
 using MS.Katusha.Domain.Service;
 using MS.Katusha.SDK.Raven;
@@ -13,6 +13,8 @@ using RestSharp;
 namespace MS.Katusha.SDK.Services
 
 {
+
+
     public delegate void MSKatushaListEventHandler<T>(object sender, MSKatushaListManagerEventArgs<T> e);
 
     public class MSKatushaCachedListItem<T, TL> where T : BaseGuidModel
@@ -32,18 +34,20 @@ namespace MS.Katusha.SDK.Services
         public string Message { get; set; }
     }
 
-    public class MSKatushaListService<T, TL> : BaseMSKatushaService where T : BaseGuidModel
+    public class MSKatushaListWindowsFormsService<T, TL> : BaseMSKatushaService where T : BaseGuidModel
     {
         private readonly string _typeName;
+        private readonly Func<ImageList, T, int, TL> _newViewItem;
         private readonly RavenStoreListManager<T> _ravenStoreListManager;
         private readonly int _cacheSize;
         private readonly Dictionary<int, MSKatushaCachedListItem<T, TL>> _dictionary;
         private readonly ImageList _imageList;
         public event MSKatushaListEventHandler<T> GetListEvent;
 
-        public MSKatushaListService(string typeName, MSKatushaServiceSettings serviceSettings, int cacheSize = 64)  : base(serviceSettings)
+        public MSKatushaListWindowsFormsService(string typeName, MSKatushaServiceSettings serviceSettings, Func<ImageList, T, int, TL> newViewItem, int cacheSize = 64)  : base(serviceSettings)
         {
             _typeName = typeName;
+            _newViewItem = newViewItem;
             _ravenStoreListManager = new RavenStoreListManager<T>(DocumentStoreManager.GetInstance(DataFolder));
             _cacheSize = cacheSize;
             _dictionary = new Dictionary<int, MSKatushaCachedListItem<T, TL>>(_cacheSize);
@@ -81,22 +85,17 @@ namespace MS.Katusha.SDK.Services
                 GetItems(lastUpdateTime, apiList.PageNo + 1, apiList.PageSize);
         }
 
-        public T GetItemDataAt(int index)
+        public MSKatushaCachedListItem<T, TL> GetItemAt(int index)
         {
-            return _dictionary[index].Data;
-        }
-
-        public MSKatushaCachedListItem<T, TL> GetItemAt(int index, Func<ImageList, T, int, TL> newViewItem)
-        {
-            if (newViewItem == null) return _dictionary[index];
-            var msKatushaListItem = _dictionary.ContainsKey(index) ? _dictionary[index] : AddItem(index, newViewItem);
+            if (_newViewItem == null) return _dictionary[index];
+            var msKatushaListItem = _dictionary.ContainsKey(index) ? _dictionary[index] : AddItem(index);
             msKatushaListItem.LastUpdate = DateTime.Now;
             return msKatushaListItem;
         }
 
         public string Delete(int index)
         {
-            var data = GetItemDataAt(index);
+            var data = GetItemAt(index).Data;
             var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
             var request = new RestRequest("Api/Delete" + ((_typeName == "Conversation") ? "Message" : _typeName) + "/{guid}", Method.GET)
                 .AddUrlSegment("guid", data.Guid.ToString());
@@ -106,17 +105,17 @@ namespace MS.Katusha.SDK.Services
             return response.Content;
         }
 
-        private MSKatushaCachedListItem<T, TL> AddItem(int index, Func<ImageList, T, int, TL> getViewItem)
+        private MSKatushaCachedListItem<T, TL> AddItem(int index)
         {
             if (_dictionary.Count == _cacheSize) RemoveOldest();
-            if (getViewItem != null)
+            if (_newViewItem != null)
             {
                 var items = _ravenStoreListManager.GetItems(index, index + 1);
                 if (items.Count > 0)
                 {
                     var item = items[0];
 
-                    var listViewItem = getViewItem(_imageList, item, index);
+                    var listViewItem = _newViewItem(_imageList, item, index);
                     var cacheItem = new MSKatushaCachedListItem<T, TL> { Index = index, Item = listViewItem, Data = item };
                     _dictionary.Add(index, cacheItem);
                     return cacheItem;
@@ -140,5 +139,18 @@ namespace MS.Katusha.SDK.Services
             _dictionary.Remove(minId);
         }
 
+        public void UpdatePhotoStatus(Photo data)
+        {
+            var client = new RestClient(BaseUrl) { Authenticator = Authenticator };
+            var request = new RestRequest("Api/UpdatePhotoStatus/{guid}", Method.GET)
+                .AddUrlSegment("guid", data.Guid.ToString())
+                .AddParameter("value", data.Status);
+            var response = client.Execute(request);
+            if (response.Content == "{status:'ok'}")
+            {
+                Result = String.Format("curl -u {0}:{1} {2}", Username, Password, response.ResponseUri);
+                _ravenStoreListManager.Update(data);
+            }
+        }
     }
 }

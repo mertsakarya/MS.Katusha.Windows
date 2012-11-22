@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raven.Database", "RavenDB\R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raven.Client.Embedded", "RavenDB\Raven.Client.Embedded\Raven.Client.Embedded.csproj", "{0F5287AD-37B3-4375-BA3E-3CED64B1FC5B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS.Katusha.Management.WPF", "MS.Katusha.Management.WPF\MS.Katusha.Management.WPF.csproj", "{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,16 @@ Global
 		{0F5287AD-37B3-4375-BA3E-3CED64B1FC5B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0F5287AD-37B3-4375-BA3E-3CED64B1FC5B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0F5287AD-37B3-4375-BA3E-3CED64B1FC5B}.Release|x86.ActiveCfg = Release|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A2702A8D-4B2A-4597-97C1-B0C278D4E0F8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

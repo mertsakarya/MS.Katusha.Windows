@@ -16,9 +16,9 @@ namespace MS.Katusha.Windows
     public partial class Form1 : Form
     {
         private MSKatushaService _service;
-        private MSKatushaListService<Profile, ListViewItem> _profileListService;
-        private MSKatushaListService<Photo, ListViewItem> _photoListService;
-        private MSKatushaListService<Conversation, ListViewItem> _messageListService;
+        private MSKatushaListWindowsFormsService<Profile, ListViewItem> _profileListService;
+        private MSKatushaListWindowsFormsService<Photo, ListViewItem> _photoListService;
+        private MSKatushaListWindowsFormsService<Conversation, ListViewItem> _messageListService;
         private Profile _profile;
         private static readonly string KatushaFolder = GetDropboxFolder() + "\\MS.Katusha";
         private readonly ICrawler _crawler = new TravelGirlsCrawler();
@@ -165,7 +165,7 @@ namespace MS.Katusha.Windows
         private void ProfileTabsSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ProfileList.SelectedIndices.Count <= 0) return;
-            _profile = _profileListService.GetItemDataAt(ProfileList.SelectedIndices[0]);
+            _profile = _profileListService.GetItemAt(ProfileList.SelectedIndices[0]).Data;
             DisplayForProfileTab();
         }
 
@@ -297,7 +297,7 @@ namespace MS.Katusha.Windows
         private void ProfileList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ProfileList.SelectedIndices.Count <= 0) return;
-            _profile = _profileListService.GetItemDataAt(ProfileList.SelectedIndices[0]);
+            _profile = _profileListService.GetItemAt(ProfileList.SelectedIndices[0]).Data;
             if (_profile == null) return;
             DisplayForProfileTab();
             textBox4.Text = string.Format(@"{0}\ProfileBackups\{1}.json", KatushaFolder, _profile.User.UserName);
@@ -315,35 +315,33 @@ namespace MS.Katusha.Windows
         private void GetDataGridProfile(DataGridView gridView, int rowIndex, int columnIndex)
         {
             long profileId = 0;
-            if (rowIndex > 0 && columnIndex > 0) {
-                var row = gridView.Rows[rowIndex];
-                var column = gridView.Columns[columnIndex];
-                if (column.Name == "Image") profileId = (long) row.Cells["ProfileId"].Value;
-                if (profileId > 0) {
-                    _profile = FindProfile(profileId);
-                    ProfileList.SelectedIndices.Clear();
-                    foreach (ListViewItem item in ProfileList.Items) {
-                        var p = item.Tag as Profile;
-                        if (p == null || p.Id != profileId) continue;
-                        item.Selected = true;
-                        item.EnsureVisible();
-                        ProfileTabs.SelectTab(0);
-                        item.Focused = true;
-                        _profile = p;
-                        DisplayForProfileTab();
-                        break;
-                    }
+            if (rowIndex <= 0 || columnIndex <= 0) return;
+            var row = gridView.Rows[rowIndex];
+            var column = gridView.Columns[columnIndex];
+            if (column.Name == "Image") profileId = (long) row.Cells["ProfileId"].Value;
+            if (profileId > 0) {
+                _profile = FindProfile(profileId);
+                ProfileList.SelectedIndices.Clear();
+                foreach (ListViewItem item in ProfileList.Items) {
+                    var p = item.Tag as Profile;
+                    if (p == null || p.Id != profileId) continue;
+                    item.Selected = true;
+                    item.EnsureVisible();
+                    ProfileTabs.SelectTab(0);
+                    item.Focused = true;
+                    _profile = p;
+                    DisplayForProfileTab();
+                    break;
                 }
-            } 
+            }
         }
 
         private void PhotoGridView_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
             var photo = PhotoGridView.Rows[e.RowIndex].Tag as Photo;
-            if (photo != null) {
-                var image = _service.GetImage(photo.Guid, PhotoType.Large);
-                PhotoBox.Image = image;
-            }
+            if (photo == null) return;
+            var image = _service.GetImage(photo.Guid, PhotoType.Large);
+            PhotoBox.Image = image;
         }
 
         private void SetControlProperty(Control control, string propertyName, object value)
@@ -375,9 +373,9 @@ namespace MS.Katusha.Windows
                 S3Fs = comboBox7.SelectedItem as S3FS
             };
             _service = new MSKatushaService(serviceSettings);
-            _profileListService = new MSKatushaListService<Profile, ListViewItem>("Profile", serviceSettings);
-            _photoListService = new MSKatushaListService<Photo, ListViewItem>("Photo", serviceSettings);
-            _messageListService = new MSKatushaListService<Conversation, ListViewItem>("Conversation", serviceSettings);
+            _profileListService = new MSKatushaListWindowsFormsService<Profile, ListViewItem>("Profile", serviceSettings, OnNewViewItem);
+            _photoListService = new MSKatushaListWindowsFormsService<Photo, ListViewItem>("Photo", serviceSettings, OnNewPhotoViewItem);
+            _messageListService = new MSKatushaListWindowsFormsService<Conversation, ListViewItem>("Conversation", serviceSettings, OnNewMessageViewItem);
             ProfileList.LargeImageList = _profileListService.ImageList;
             PhotoList.LargeImageList = _photoListService.ImageList;
             _profileListService.GetListEvent += ProfileListServiceOnGetListEvent;
@@ -401,9 +399,9 @@ namespace MS.Katusha.Windows
 
         private void PhotoList_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            var item = _photoListService.GetItemAt(e.ItemIndex, OnNewPhotoViewItem);
+            var item = _photoListService.GetItemAt(e.ItemIndex);
             if (item.Item.ImageList != null)
-                item.Item.ImageIndex = item.Item.ImageList.Images.IndexOfKey(item.Index.ToString());
+                item.Item.ImageIndex = item.Item.ImageList.Images.IndexOfKey(item.Index.ToString(CultureInfo.InvariantCulture));
             e.Item = item.Item;
         }
 
@@ -418,7 +416,7 @@ namespace MS.Katusha.Windows
                 ImageIndex = index,
                 ToolTipText = p.FileName
             };
-            var image = _service.GetImage(p.Guid);
+            var image = _service.GetImageByStatus(p);
             imageList.Images.Add(index.ToString(CultureInfo.InvariantCulture), image);
             listViewItem.ImageKey = index.ToString(CultureInfo.InvariantCulture);
             return listViewItem;
@@ -437,9 +435,9 @@ namespace MS.Katusha.Windows
 
         private void ProfileList_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            var item = _profileListService.GetItemAt(e.ItemIndex, OnNewViewItem);
+            var item = _profileListService.GetItemAt(e.ItemIndex);
             if (item.Item.ImageList != null)
-                item.Item.ImageIndex = item.Item.ImageList.Images.IndexOfKey(item.Index.ToString());
+                item.Item.ImageIndex = item.Item.ImageList.Images.IndexOfKey(item.Index.ToString(CultureInfo.InvariantCulture));
             e.Item = item.Item;
         }
 
@@ -468,7 +466,7 @@ namespace MS.Katusha.Windows
 
         private void MessageView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            var item = _messageListService.GetItemAt(e.ItemIndex, OnNewMessageViewItem);
+            var item = _messageListService.GetItemAt(e.ItemIndex);
             e.Item = item.Item;
         }
 
@@ -487,14 +485,17 @@ namespace MS.Katusha.Windows
             listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, (p.From != null) ? p.From.Name: p.FromId.ToString(CultureInfo.InvariantCulture)));
             listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, (p.To != null) ? p.To.Name: p.ToId.ToString(CultureInfo.InvariantCulture)));
             listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, p.Subject));
-            listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, p.Message));
             listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, (isRead) ? p.ReadDate.ToString("u") : ""));
+            listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, p.Message));
             return listViewItem;
         }
-
-        
+       
         private void ProfileList_SearchForVirtualItem(object sender, SearchForVirtualItemEventArgs e)
         {
+            var id = 0;
+            if (int.TryParse(e.Text, out id))
+            {
+            }
 
         }
 
@@ -522,6 +523,113 @@ namespace MS.Katusha.Windows
                 }
             }
         }
+
+        private void MessageView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (MessageView.SelectedIndices.Count <= 0) return;
+            var data = _messageListService.GetItemAt(MessageView.SelectedIndices[0]).Data;
+            SubjectLabel.Text = data.Subject;
+            MessageBrowser.DocumentText = String.Format("<html><head></head><body><font face=\"Verdana\" size=\"2\" color=\"#333\">{0}</font></body></html>", data.Message);
+        }
+
+        private void PhotoContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (PhotoList.SelectedIndices.Count <= 0) { e.Cancel = true; return; }
+            PhotoReadyMenuItem.Enabled = true;
+            PhotoWaitingApprovalMenuItem.Enabled = true;
+            PhotoRejectedMenuItem.Enabled = true;
+            PhotoReadyMenuItem.Checked = false;
+            PhotoWaitingApprovalMenuItem.Checked = false;
+            PhotoRejectedMenuItem.Checked = false;
+            var status = (byte)255;
+            foreach (int index in PhotoList.SelectedIndices)
+            {
+                var item = _photoListService.GetItemAt(index);
+                var data = item.Data;
+                if (status != 255 && status != data.Status)
+                {
+                    PhotoReadyMenuItem.Enabled = false;
+                    PhotoWaitingApprovalMenuItem.Enabled = false;
+                    PhotoRejectedMenuItem.Enabled = false;
+                    return;
+                }
+                status = data.Status;
+            }
+            var photoStatus = (PhotoStatus) status;
+            switch (photoStatus)
+            {
+                case PhotoStatus.Ready:
+                    PhotoReadyMenuItem.Checked = true;
+                    break;
+                case PhotoStatus.Rejected:
+                    PhotoRejectedMenuItem.Checked = true;
+                    break;
+                default:
+                    PhotoWaitingApprovalMenuItem.Checked = true;
+                    break;
+
+            }
+        }
+
+        private void PhotoRejectedMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePhotos(PhotoStatus.Rejected);
+        }
+
+        private void PhotoWaitingApprovalMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePhotos(PhotoStatus.WaitingApproval);
+        }
+
+        private void PhotoReadyMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePhotos(PhotoStatus.Ready);
+        }
+
+        private void UpdatePhotos(PhotoStatus photoStatus)
+        {
+            foreach (int index in PhotoList.SelectedIndices)
+            {
+                var item = _photoListService.GetItemAt(index);
+                item.Data.Status = (byte) photoStatus;
+                _photoListService.UpdatePhotoStatus(item.Data);
+                var image = _service.GetImageByStatus(item.Data);
+                var imageList = _photoListService.ImageList;
+                var i = imageList.Images.IndexOfKey(item.Index.ToString(CultureInfo.InvariantCulture));
+                imageList.Images[i] = image;
+                PhotoList.RedrawItems(index+1, index+1, false);
+            }
+        }
+
+        private void PhotoDeleteMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (int index in PhotoList.SelectedIndices)
+            {
+                var item = _photoListService.GetItemAt(index);
+                _photoListService.Delete(item.Index);
+                var image = _service.GetImageByStatus(item.Data);
+                var imageList = _photoListService.ImageList;
+                var i = imageList.Images.IndexOfKey(item.Index.ToString(CultureInfo.InvariantCulture));
+                imageList.Images[i] = image;
+                PhotoList.RedrawItems(index, index, false);
+            }
+        }
+
+        private void PhotoGoToProfileMenuItem_Click(object sender, EventArgs e)
+        {
+            if (PhotoList.SelectedIndices.Count > 0)
+            {
+                var item = _photoListService.GetItemAt(PhotoList.SelectedIndices[0]);
+                _profile = FindProfile(item.Data.ProfileId);
+                if (_profile != null)
+                {
+                    ProfilesTab.SelectedIndex = 0;
+                    ProfileTabs.SelectedIndex = 0;
+                    DisplayForProfileTab();
+                }
+            }
+        }
+
     }
 
 }

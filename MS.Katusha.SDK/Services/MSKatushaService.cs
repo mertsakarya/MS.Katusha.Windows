@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using MS.Katusha.Domain.Entities;
-using MS.Katusha.Domain.Entities.BaseEntities;
 using MS.Katusha.Domain.Raven.Entities;
 using MS.Katusha.Enumerations;
 using MS.Katusha.SDK.Raven;
@@ -171,6 +172,76 @@ namespace MS.Katusha.SDK.Services
             //folder = new DirectoryInfo(_dataFolder + "\\Images");
             //folder.Delete(true);
             _ravenStore.DeleteAll();
+        }
+
+        private Image ToRejectedImage(Image image)
+        {
+            var bm = new Bitmap(image.Width, image.Height);
+            var g = Graphics.FromImage(bm);
+            //var ia = new ImageAttributes();
+            //var cm = new ColorMatrix(new float[][]{   
+            //    new float[]{0.5f,0.5f,0.5f,0,0},
+            //    new float[]{0.5f,0.5f,0.5f,0,0},
+            //    new float[]{0.5f,0.5f,0.5f,0,0},
+            //    new float[]{0,0,0,1,0,0},
+            //    new float[]{0,0,0,0,1,0},
+            //    new float[]{0,0,0,0,0,1}});
+            //ia.SetColorMatrix(cm);
+            //g.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, ia);
+            g.DrawImage(image, 0, 0);
+            g.DrawLine(new Pen(Color.Red, 1), 0, 0, image.Width, image.Height);
+            g.DrawLine(new Pen(Color.Red, 1), image.Width, 0, 0, image.Height);
+            g.Dispose();
+            return Image.FromHbitmap(bm.GetHbitmap());
+        }
+
+        private Image ToWaitingApprovalImage(Image image)
+        {
+            var bm = new Bitmap(image.Width, image.Height);
+            var g = Graphics.FromImage(bm);
+            var cm = new ColorMatrix(new float[][]{   
+                new float[]{0.5f,0.5f,0.5f,0,0},
+                new float[]{0.5f,0.5f,0.5f,0,0},
+                new float[]{0.5f,0.5f,0.5f,0,0},
+                new float[]{0,0,0,1,0,0},
+                new float[]{0,0,0,0,1,0},
+                new float[]{0,0,0,0,0,1}});
+
+            /*
+            //Gilles Khouzams colour corrected grayscale shear
+            ColorMatrix cm = new ColorMatrix(new float[][]{   new float[]{0.3f,0.3f,0.3f,0,0},
+                                      new float[]{0.59f,0.59f,0.59f,0,0},
+                                      new float[]{0.11f,0.11f,0.11f,0,0},
+                                      new float[]{0,0,0,1,0,0},
+                                      new float[]{0,0,0,0,1,0},
+                                      new float[]{0,0,0,0,0,1}});
+            */
+
+            var ia = new ImageAttributes();
+            ia.SetColorMatrix(cm);
+            g.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, ia);
+            g.Dispose();
+            return Image.FromHbitmap(bm.GetHbitmap());
+        }
+
+        public Image GetImageByStatus(Photo photo)
+        {
+            var image = GetImage(photo.Guid);
+            switch ((PhotoStatus) photo.Status)
+            {
+                case PhotoStatus.Rejected:
+                    image = ToRejectedImage(image);
+                    break;
+                case PhotoStatus.NotExist:
+                case PhotoStatus.Uploading:
+                case PhotoStatus.WaitingApproval:
+                    image = ToWaitingApprovalImage(image);
+                    break;
+                case PhotoStatus.Ready:
+                default:
+                    break;
+            }
+            return image;
         }
     }
 
